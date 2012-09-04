@@ -645,7 +645,7 @@ class WorkerThread implements Runnable {
 		    try{ Thread.sleep(1800);}
 		    catch( InterruptedException ie) {}
 
-    		    window.closeBidFrame();
+   		    window.closeBidFrame();
 
 		    if(contract.getWinner() != "PASS") {
 

@@ -98,7 +98,7 @@ public class Contract {
 	 **********************************************************************/
 	public boolean isFinal() {
 
-	    if(this.Winner == "None")
+	    if(this.Winner.equals("None"))
 		return false;
 	    else
 		return true;
