@@ -45,7 +45,7 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        last_bidder;
 
 	private static int FRAME_W    = 420;
-	private static int FRAME_H    = 200;
+	private static int FRAME_H    = 240;
 	private static int RIGHT_ROW  = 6;
 	private static int RIGHT_COL  = 4;
 	private static int LOW_VALUE  = 1;
@@ -101,7 +101,7 @@ public class BidFrame extends javax.swing.JPanel {
 	    LeftSide = new JPanel();
 	    LeftSide.setSize((FRAME_W / 2), FRAME_H);
 	    LeftSide.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 15));
-	
+
 	    //first slider
 	    Value_Slider = new JSlider();
 	    Value_Slider.setOrientation(JSlider.HORIZONTAL);
@@ -181,7 +181,7 @@ public class BidFrame extends javax.swing.JPanel {
 	 * they are made, both by the player and computer players *************
 	 **********************************************************************/
 	private void SetupRightSide() {
-	
+
 	    RightSide = new JPanel();
 	    RightSide.setSize((FRAME_W / 2), FRAME_H);
 	    RightSide.setLayout(new GridLayout(RIGHT_ROW,RIGHT_COL));
@@ -214,7 +214,7 @@ public class BidFrame extends javax.swing.JPanel {
 	public void runBid() {
 	    int tmpSuit = -1;
 	    int tmpValue = -1;
-	
+
 
 	    while(!this.Current.isplayer()) {
 		tmpSuit = this.Current.getMaxSuit();
@@ -346,7 +346,7 @@ public class BidFrame extends javax.swing.JPanel {
 	 * and their bid is legal based on the current bid information ********
 	 **********************************************************************/
 	private void BidActionPerformed(ActionEvent evt) {
-	
+
 	    int tmp_value;
 	    int tmp_suit;
 
@@ -395,7 +395,7 @@ public class BidFrame extends javax.swing.JPanel {
 	private void DoubleActionPerformed(ActionEvent evt) {
 
 	   if(this.Current.isplayer() && !isContract()) {
-	
+
 		if((curr_conditions == "None") && (curr_value > 0)) {
 		    curr_conditions = "DBL";
 
@@ -429,7 +429,7 @@ public class BidFrame extends javax.swing.JPanel {
 	private void RedoubleActionPerformed(ActionEvent evt) {
 
 	    if(this.Current.isplayer() && !isContract()) {
-	
+
 		if(curr_conditions == "DBL") {
 		    curr_conditions = "RDBL";
 
@@ -541,7 +541,7 @@ public class BidFrame extends javax.swing.JPanel {
 	 **********************************************************************/
 	public boolean isContract() {
 
-	    if (tmpContract.getWinner() == "None")
+	    if (tmpContract.getWinner().equals("None"))
 		return false;
 	    else
 		return true;

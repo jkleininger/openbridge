@@ -1,107 +1,84 @@
-/******************************************************************************
- ***************************** Contract.java **********************************
- * @author Scott DiTomaso******************************************************
- * Kettering University *******************************************************
- ******************************************************************************
- * Created on January 02, 2010 ************************************************
- ******************************************************************************/
+/*********************************************************************
+* Contract.java                                                      *
+* @author Scott DiTomaso                                             *
+* Kettering University                                               *
+*                                                                    *
+* Created on January 02, 2010                                        *
+*********************************************************************/
 
 package openbridge;
 
-/******************
- * Contract class *
- ******************/
 public class Contract {
 
-    /*************************
-     * Private class members *
-     *************************/
-	private String Winner;
-	private String condition;
-	private int tricks;
-	private int trump;
+/************************
+* Private class members *
+************************/
+	private volatile String  Winner;
+	private String  condition;
+	private int     tricks;
+	private int     trump;
+  private boolean cFinal = false;
 
-        /***************
-         * Constructor *
-         ***************/
-	Contract() {
-
-	    Winner = "None";
-	    condition = "None";
-	    tricks = 0;
-	    trump = 0;
-	}
-
-
-    /************************
-     * Public class members *
-     ************************/
+  /**************
+  * Constructor *
+  ***************/
+	public Contract() {
+    Winner    = "None";
+    condition = "None";
+    tricks    = 0;
+    trump     = 0;
+  }
 
 	/**********************************************************************
-	 * setContract() ******************************************************
-	 **********************************************************************
-	 * Sets the values of the contract to the values supplied *************
-	 **********************************************************************/
+  * setContract()                                                       *
+  *                                                                     *
+  * Sets the values of the contract to the values supplied              *
+	**********************************************************************/
 	public void setContract(String w, int t, int suit, String c) {
-
-	    this.Winner = w;
-	    this.condition = c;
-	    this.tricks = t;
-	    this.trump = suit;
+    System.out.println("Setting contract: " + w + " wins!");
+    this.Winner    = w;
+	  this.condition = c;
+	  this.tricks    = t;
+	  this.trump     = suit;
+    this.cFinal    = true;
+    System.out.println(this.isFinal()?"FINAL":"NOT FINAL");
 	}
 
 	/**********************************************************************
-	 * getWinner() ********************************************************
-	 **********************************************************************
-	 * Returns the position of the final person to bid as a String ********
-	 **********************************************************************/
-	public String getWinner() {
+  * getWinner()                                                         *
+  *                                                                     *
+  * Returns the position of the final person to bid as a String         *
+  **********************************************************************/
+  String getWinner()     { return this.Winner;    }
 
-	    return this.Winner;
-	}
+  /***********************************************************************
+  * getSuit()                                                            *
+  *                                                                      *
+  * Returns any conditions such as double or redouble that are           *
+  * associated with the contract                                         *
+  ***********************************************************************/
+	String getConditions() { return this.condition; }
 
-	/**********************************************************************
-	 * getSuit() **********************************************************
-	 **********************************************************************
-	 * Returns any conditions such as double or redouble that are *********
-	 * associated with the contract ***************************************
-	 **********************************************************************/
-	public String getConditions() {
+	/***********************************************************************
+  * getTricks()                                                          *
+  *                                                                      *
+  * Returns the number of tricks the winner bid as an Int                *
+  ***********************************************************************/
+	int getTricks()        { return this.tricks;    }
 
-	    return this.condition;
-	}
+	/***********************************************************************
+	* getTrump()                                                           *
+	*                                                                      *
+	* Returns the trump suit of the contarct as an Int                     *
+  ***********************************************************************/
+	int getTrump()         {  return this.trump;    }
 
-	/**********************************************************************
-	 * getTricks() ********************************************************
-	 **********************************************************************
-	 * Returns the number of tricks the winner bid as an Int **************
-	 **********************************************************************/
-	public int getTricks() {
-
-	    return this.tricks;
-	}
-	/**********************************************************************
-	 * getTrump() *********************************************************
-	 **********************************************************************
-	 * Returns the trump suit of the contarct as an Int *******************
-	 **********************************************************************/
-	public int getTrump() {
-
-	    return this.trump;
-	}
-
-	/**********************************************************************
-	 * isFianl() **********************************************************
-	 **********************************************************************
-	 * Returns false if the Winner field has not been set and true if *****
-	 * the field is anything but the default "None" ***********************
-	 **********************************************************************/
-	public boolean isFinal() {
-
-	    if(this.Winner.equals("None"))
-		return false;
-	    else
-		return true;
-	}
+	/***********************************************************************
+  * isFinal()                                                            *
+	*                                                                      *
+  * Returns false if the Winner field has not been set and true if       *
+  * the field is anything but the default "None"                         *
+  ***********************************************************************/
+  boolean isFinal() { return (this.cFinal); }
 
 }
