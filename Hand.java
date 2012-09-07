@@ -28,8 +28,8 @@ public class Hand {
 	public int numCrds;
 	private String position;
 	private Bid bid;
-    
-    
+
+
 	/****************
 	 * Constructors *
 	 ****************/
@@ -130,7 +130,7 @@ public class Hand {
 	    numCrds--;
 
 	    g.moveComputerCards(spot, numCrds, this.position);
-	}	
+	}
 
 	/**********************************************************************
 	 * blankCard() ********************************************************
@@ -207,7 +207,7 @@ public class Hand {
 	public void resetHand() {
 
 	    this.cards = new Card[13];
-	    this.numCrds = 0;	
+	    this.numCrds = 0;
 
 	}
 
@@ -310,7 +310,7 @@ public class Hand {
 				if(dummy.getCard(i).getNumSuit() == this.cards[j].getNumSuit()) {
 				    return playWinningCard(g, j);
 				}
-			    } 
+			    }
 			}
 		    }
 		    for(int k=0; k<this.numCrds; ++k) {

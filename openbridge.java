@@ -11,6 +11,7 @@ package openbridge;
 /********************
  * openbridge class *
  ********************/
+
 public class openbridge extends Thread{
 
     /*************************
@@ -24,7 +25,6 @@ public class openbridge extends Thread{
 	private static OpenBridgeGUI Windowx;
 	private static Thread BidThread = null;
 	private static WorkerThread BidWorker;
-
 
     /************************
      * Public class members *
@@ -48,27 +48,26 @@ public class openbridge extends Thread{
 	 * if it exists and set up the window and players, then start the *****
 	 * thread to handle the gameplay **************************************
 	 **********************************************************************/
-	public static void newGame() {
+  public static void newGame() {
+    if(BidThread != null) { BidWorker.stopThread(); }
 
-	    if(BidThread != null)
-		BidWorker.stopThread();
+    Windowx.reset();
+    Windowx.initComponents();
 
-	    Windowx.reset();
-	    Windowx.initComponents();
+    Player    = new Hand(true, "SOUTH");
+    Computer2 = new Hand(false, Player,    "EAST");
+    Partner   = new Hand(false, Computer2, "NORTH");
+    Computer1 = new Hand(false, Partner,   "WEST");
+    Dealer    = Partner;
 
-	    Player = new Hand(true, "SOUTH");
-	    Computer2 = new Hand(false, Player, "EAST");
-	    Partner = new Hand(false, Computer2, "NORTH");
-	    Computer1 = new Hand(false, Partner, "WEST");
-	    Dealer = Partner;
+    Player.addLeft(Computer1);
 
-	    Player.addLeft(Computer1);
+    BidWorker = new WorkerThread(Windowx, Dealer);
+    BidThread = new Thread(BidWorker);
+    BidThread.start();
+  }
 
-	    BidWorker = new WorkerThread(Windowx, Dealer);
 
-	    BidThread = new Thread(BidWorker);
-	    BidThread.start();
-	}
 }
 
 /**********************
@@ -131,16 +130,15 @@ class WorkerThread implements Runnable {
 	private void computerDeclarer(String position) {
 	    int hand_suit = -1;
 
-	    if(position == "WEST") {
+	    if(position.equals("WEST")) {
 		curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		hand_suit = curr_hand[1].getNumSuit();
 
 		declarer = declarer.getLeft();
-		if(dummy.getPosition() == "NORTH") {
+		if(dummy.getPosition().equals("NORTH")) {
 		    declarer.unlock(window, hand_suit);
 
-		    while(window.isReady()) {
-        	    }
+		    while(window.isReady()) { zzz(0); }
 
 		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		    declarer.blankCard(window.getLastPlayed());
@@ -155,15 +153,14 @@ class WorkerThread implements Runnable {
 		curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
 		declarer = declarer.getLeft();
-		if(dummy.getPosition() == "SOUTH") {
+		if(dummy.getPosition().equals("SOUTH")) {
           //zzz(600);
 
 		    curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		} else {
 		    declarer.unlock(window, hand_suit);
 
-		    while(window.isReady()) {
-        	    }
+		    while(window.isReady()) { zzz(0); }
 
 		    curr_hand[0] = declarer.getCard(window.getLastPlayed());
 		    declarer.blankCard(window.getLastPlayed());
@@ -171,23 +168,18 @@ class WorkerThread implements Runnable {
 
 		declarer = declarer.getLeft();
 
-	    } else if(position == "EAST") {
+	    } else if(position.equals("EAST")) {
 		curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		hand_suit = curr_hand[3].getNumSuit();
-
 		declarer = declarer.getLeft();
-		if(dummy.getPosition() == "SOUTH") {
-          //zzz(600);
-
-		    curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+		if(dummy.getPosition().equals("SOUTH")) {
+			//zzz(600);
+			curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		} else {
-		    declarer.unlock(window, hand_suit);
-
-		    while(window.isReady()) {
-        	    }
-
-		    curr_hand[0] = declarer.getCard(window.getLastPlayed());
-		    declarer.blankCard(window.getLastPlayed());
+			declarer.unlock(window, hand_suit);
+			while(window.isReady()) { zzz(0); }
+			curr_hand[0] = declarer.getCard(window.getLastPlayed());
+			declarer.blankCard(window.getLastPlayed());
 		}
 
           //zzz(600);
@@ -196,11 +188,10 @@ class WorkerThread implements Runnable {
 		curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
 		declarer = declarer.getLeft();
-		if(dummy.getPosition() == "NORTH") {
+		if(dummy.getPosition().equals("NORTH")) {
 		    declarer.unlock(window, hand_suit);
 
-		    while(window.isReady()) {
-        	    }
+		    while(window.isReady()) { zzz(0); }
 
 		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		    declarer.blankCard(window.getLastPlayed());
@@ -228,7 +219,7 @@ class WorkerThread implements Runnable {
 	    } else {
 		declarer.unlock(window, 4);
 
-		while(window.isReady()) { }//zzz(0); }
+		while(window.isReady()) { zzz(0); }
 
 		curr_hand[0] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
@@ -244,8 +235,7 @@ class WorkerThread implements Runnable {
 	    if(dummy.getPosition() == "NORTH") {
 		declarer.unlock(window, hand_suit);
 
-		while(window.isReady()) {
-		}
+		while(window.isReady()) { zzz(0); }
 
 		curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
@@ -275,8 +265,7 @@ class WorkerThread implements Runnable {
 	    if(dummy.getPosition() == "NORTH") {
 		declarer.unlock(window, 4);
 
-		while(window.isReady()) {
-		}
+		while(window.isReady()) { zzz(0); }
 
 		curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
@@ -298,7 +287,7 @@ class WorkerThread implements Runnable {
 	    } else {
 		declarer.unlock(window, hand_suit);
 
-		while(window.isReady()) { }//zzz(0); }
+		while(window.isReady()) { zzz(0); }
 
 		curr_hand[0] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
@@ -330,30 +319,25 @@ class WorkerThread implements Runnable {
 	    }
 
 
-	    if(declarer.getPosition() == "WEST")
+	    if(declarer.getPosition().equals("WEST"))
 		start = 1;
-	    else if(declarer.getPosition() == "EAST")
+	    else if(declarer.getPosition().equals("EAST"))
 		start = 3;
-	    else if(declarer.getPosition() == "NORTH")
+	    else if(declarer.getPosition().equals("NORTH"))
 		start = 2;
 	    else
 		start = 0;
 
 	    entered = start;
 
-	    pos = start + 1;
-	    if(pos == 4)
-		pos = 0;
+            for(pos=start+1;pos>3;pos-=4);
 
 	    for(int j=0; j<3; ++j) {
 		if((curr_hand[pos].getNumSuit() == trump && curr_hand[start].getNumSuit() != trump) ||
 		   (curr_hand[pos].getNumSuit() == curr_hand[start].getNumSuit() && curr_hand[pos].getValue() > curr_hand[start].getValue())) {
 			start = pos;
 		}
-
-		++pos;
-		if(pos == 4)
-		    pos = 0;
+		pos=pos<3?pos++:0;
 	    }
 
 	    if(start % 2 == 0) {
@@ -527,6 +511,7 @@ class WorkerThread implements Runnable {
 		}
 	    }
 
+            System.out.println("setting all trick counts to 0");
 	    nsTricks = 0;
 	    weTricks = 0;
 	    window.updateTricks(2, 0);
@@ -536,32 +521,31 @@ class WorkerThread implements Runnable {
 	    window.removeDealer(dealer.getPosition());
 	}
 
-	/**********************************************************************
-	 * getRubberBonus() ***************************************************
-	 **********************************************************************
-	 * Determines the bonus to be applied for winning the rubber **********
-	 * depending on how many games were won by ****************************
-	 **********************************************************************/
-	private void getRubberBonus(int pos) {
-
-	    if(pos == 0) {
-		if(weGames == 0) {
-		    nsAboveLine += 700;
-		    window.belowLine(0, 700);
-		} else if(weGames == 1) {
-		    nsAboveLine += 500;
-		    window.belowLine(0, 500);
-		}
-	    } else if(pos == 1) {
-		if(nsGames == 0){
-		    weAboveLine += 700;
-		    window.belowLine(1, 700);
-		} else if(nsGames == 1) {
-		    weAboveLine += 500;
-		    window.belowLine(1, 500);
-		}
-	    }
-	}
+/*********************************************************************
+* getRubberBonus() ***************************************************
+**********************************************************************
+* Determines the bonus to be applied for winning the rubber **********
+* depending on how many games were won by ****************************
+*********************************************************************/
+  private void getRubberBonus(int pos) {
+    if(pos == 0) {
+      if(weGames == 0) {
+        nsAboveLine += 700;
+        window.belowLine(0, 700);
+      } else if(weGames == 1) {
+        nsAboveLine += 500;
+        window.belowLine(0, 500);
+      }
+    } else if(pos == 1) {
+      if(nsGames == 0){
+        weAboveLine += 700;
+        window.belowLine(1, 700);
+      } else if(nsGames == 1) {
+        weAboveLine += 500;
+        window.belowLine(1, 500);
+      }
+    }
+  }
 
 
     /************************
@@ -588,63 +572,58 @@ class WorkerThread implements Runnable {
     while(nsGames <= 2 && weGames <= 2) {
       while(nsScore < 100 && weScore < 100) {
         contract = new Contract();
+        alreadyPlayed = new boolean[4][13];
+        clearAlreadyPlayed();
 
-		    alreadyPlayed = new boolean[4][13];
-		    clearAlreadyPlayed();
+        for(int i=0; i<4; ++i) {
+          dealer.resetHand();
+          dealer = dealer.getLeft();
+        }
 
-		    for(int i=0; i<4; ++i) {
-			    dealer.resetHand();
-			    dealer = dealer.getLeft();
-		    }
+        window.showVulnerable(vulnerable);
+        Deck deck = new Deck();
+        deck.shuffle();
+        dealer = dealer.getLeft();
+        deck.deal(dealer);
+        window.placeDealer(dealer);
 
-		    window.showVulnerable(vulnerable);
+        for(int j=0; j<4; ++j) {
+          dealer.drawHand(window);
+          dealer.bidstuff();
+          dealer = dealer.getLeft();
+        }
 
-		    Deck deck = new Deck();
+        window.repaint();
+        window.Lock("ALL");
+        window.createBidFrame(dealer, contract);
 
-		    deck.shuffle();
+        while (!(contract.isFinal())) { zzz(0); }
 
-		    dealer = dealer.getLeft();
-		    deck.deal(dealer);
-		    window.placeDealer(dealer);
+        zzz(2000);
 
-		    for(int j=0; j<4; ++j) {
-              dealer.drawHand(window);
-              dealer.bidstuff();
-              dealer = dealer.getLeft();
-            }
+        window.closeBidFrame();
 
-		    window.repaint();
-		    window.Lock("ALL");
+        if(!contract.getWinner().equals("PASS")) {
+          window.ShowContract(contract);
+          declarer = dealer;
+        }
 
-		    window.createBidFrame(dealer, contract);
-
-            while (!(contract.isFinal())) { zzz(0); }
-
-           zzz(2000);
-
-           window.closeBidFrame();
-
-		   if(!contract.getWinner().equals("PASS")) {
-             window.ShowContract(contract);
-             declarer = dealer;
-           }
-
-          while(declarer.getPosition() != contract.getWinner()) {
-            declarer = declarer.getLeft();
-          }
-
-          window.placeDeclarer(declarer);
-
+        while(declarer.getPosition() != contract.getWinner()) {
           declarer = declarer.getLeft();
-          declarer = declarer.getLeft();
-          declarer.flipHand(window);
-          dummy = declarer;
-          declarer = declarer.getLeft();
-          declarer = declarer.getLeft();
+        }
 
-          if(declarer.getPosition() != "SOUTH" && dummy.getPosition() != "NORTH") {
-            zzz(2000);
-          }
+        window.placeDeclarer(declarer);
+
+        declarer = declarer.getLeft();
+        declarer = declarer.getLeft();
+        declarer.flipHand(window);
+        dummy = declarer;
+        declarer = declarer.getLeft();
+        declarer = declarer.getLeft();
+
+        if(declarer.getPosition() != "SOUTH" && dummy.getPosition() != "NORTH") {
+          zzz(2000);
+        }
 
         for(int k=0; k<13; ++k) {
           if(stop_var) return;
@@ -652,25 +631,26 @@ class WorkerThread implements Runnable {
           curr_hand = new Card[4];
 
           String dPos = declarer.getPosition();
-
-          if(dPos.equals("EAST"))  { computerDeclarer(dPos); } else
+          if(dPos.equals("EAST"))  { System.out.println("east should go now."); computerDeclarer(dPos); } else
           if(dPos.equals("SOUTH")) { playerDeclarer();       } else
           if(dPos.equals("WEST"))  { computerDeclarer(dPos); } else
           if(dPos.equals("NORTH")) { partnerDeclarer();      }
 
           zzz(400);
           findWinner();
-
           zzz(1500);
 
-		  window.clearCenter();
+          window.clearCenter();
 
+          dPos = declarer.getPosition();
           if(!dummy.getPosition().equals("NORTH")) {
             if(dPos.equals("EAST") || dPos.equals("WEST") || dPos.equals("NORTH") || dPos.equals("SOUTH")) {
               zzz(300);
-              calculateScore();
-		    }
+            }
           }
+
+}
+          calculateScore();
 
 		if(nsScore >= 100) {
 		    nsGames++;
@@ -699,7 +679,7 @@ class WorkerThread implements Runnable {
 	    window.removeDeclarer(declarer.getPosition());
 	    window.removeDealer(dealer.getPosition());
 	    window.gameTotal(nsAboveLine, weAboveLine);
-      }
+
       }
 	}
 
