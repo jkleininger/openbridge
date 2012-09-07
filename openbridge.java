@@ -145,22 +145,18 @@ class WorkerThread implements Runnable {
 		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		    declarer.blankCard(window.getLastPlayed());
 		} else {
-		    try{ Thread.sleep(600);}
-		    catch( InterruptedException ie) {}
-
+          //zzz(600);
 		    curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		}
 
-		try{ Thread.sleep(600);}
-		catch( InterruptedException ie) {}
+          //zzz(600);
 
 		declarer = declarer.getLeft();
 		curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
 		declarer = declarer.getLeft();
 		if(dummy.getPosition() == "SOUTH") {
-		    try{ Thread.sleep(600);}
-		    catch( InterruptedException ie) {}
+          //zzz(600);
 
 		    curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		} else {
@@ -181,8 +177,7 @@ class WorkerThread implements Runnable {
 
 		declarer = declarer.getLeft();
 		if(dummy.getPosition() == "SOUTH") {
-		    try{ Thread.sleep(600);}
-		    catch( InterruptedException ie) {}
+          //zzz(600);
 
 		    curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		} else {
@@ -195,8 +190,7 @@ class WorkerThread implements Runnable {
 		    declarer.blankCard(window.getLastPlayed());
 		}
 
-		try{ Thread.sleep(600);}
-		catch( InterruptedException ie) {}
+          //zzz(600);
 
 		declarer = declarer.getLeft();
 		curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
@@ -211,8 +205,7 @@ class WorkerThread implements Runnable {
 		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		    declarer.blankCard(window.getLastPlayed());
 		} else {
-		    try{ Thread.sleep(600);}
-		    catch( InterruptedException ie) {}
+          //zzz(600);
 
 		    curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 		}
@@ -235,16 +228,14 @@ class WorkerThread implements Runnable {
 	    } else {
 		declarer.unlock(window, 4);
 
-		while(window.isReady()) {
-        	}
+		while(window.isReady()) { }//zzz(0); }
 
 		curr_hand[0] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
 	    }
 	    hand_suit = curr_hand[0].getNumSuit();
 
-	    try{ Thread.sleep(600);}
-	    catch( InterruptedException ie) {}
+          //zzz(600);
 
 	    declarer = declarer.getLeft();
 	    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
@@ -259,14 +250,12 @@ class WorkerThread implements Runnable {
 		curr_hand[2] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
 	    } else {
-		try{ Thread.sleep(600);}
-		catch( InterruptedException ie) {}
+          //zzz(600);
 
 		curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 	    }
 
-	    try{ Thread.sleep(600);}
-	    catch( InterruptedException ie) {}
+          //zzz(600);
 
 	    declarer = declarer.getLeft();
 	    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
@@ -296,30 +285,26 @@ class WorkerThread implements Runnable {
 	    }
 	    hand_suit = curr_hand[2].getNumSuit();
 
-	    try{ Thread.sleep(600);}
-	    catch( InterruptedException ie) {}
+          //zzz(600);
 
 	    declarer = declarer.getLeft();
 	    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
 	    declarer = declarer.getLeft();
 	    if(dummy.getPosition() == "SOUTH") {
-		try{ Thread.sleep(600);}
-		catch( InterruptedException ie) {}
+          //zzz(600);
 
 		curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 	    } else {
 		declarer.unlock(window, hand_suit);
 
-		while(window.isReady()) {
-        	}
+		while(window.isReady()) { }//zzz(0); }
 
 		curr_hand[0] = declarer.getCard(window.getLastPlayed());
 		declarer.blankCard(window.getLastPlayed());
 	    }
 
-	    try{ Thread.sleep(600);}
-	    catch( InterruptedException ie) {}
+          //zzz(600);
 
 	    declarer = declarer.getLeft();
 	    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
@@ -410,29 +395,28 @@ class WorkerThread implements Runnable {
 	 * the contract and the number of tricks taken ************************
 	 **********************************************************************/
 	private void calculateScore() {
-	    int tricks = 0;
-	    int below = 0;
-	    int above = 0;
-	    int tmp = 0;
-	    int multi = 1;
-	    int redouble = 0;
+	    int     tricks = 0;
+	    int     below = 0;
+	    int     above = 0;
+	    int     tmp = 0;
+	    int     multi = 1;
+	    int     redouble = 0;
 	    boolean vuln = false;
 
 	    if(contract.getWinner() == "SOUTH" || contract.getWinner() == "NORTH") {
-		tricks = nsTricks;
-		if((vulnerable & 0x0001) != 0)
-		    vuln = true;
+          tricks = nsTricks;
+		  if((vulnerable & 0x0001) != 0) vuln = true;
 	    } else if(contract.getWinner() == "WEST" || contract.getWinner() == "EAST") {
-		tricks = weTricks;
-		if((vulnerable & 0x0002) != 0)
-		    vuln = true;
+		  tricks = weTricks;
+		  if((vulnerable & 0x0002) != 0) vuln = true;
 	    }
+
 	    if(contract.getConditions() == "DBL") {
-		multi = 2;
-		above = 50;
+          multi = 2;
+		  above = 50;
 	    } else if(contract.getConditions() == "RDBL") {
-		redouble = 1;
-		multi = 4;
+		  redouble = 1;
+		  multi = 4;
 	    }
 
 
@@ -600,6 +584,7 @@ class WorkerThread implements Runnable {
 	 * starting over again until there is a winner ************************
 	 **********************************************************************/
   public void run() {
+
     while(nsGames <= 2 && weGames <= 2) {
       while(nsScore < 100 && weScore < 100) {
         contract = new Contract();
@@ -623,44 +608,43 @@ class WorkerThread implements Runnable {
 		    window.placeDealer(dealer);
 
 		    for(int j=0; j<4; ++j) {
-          dealer.drawHand(window);
-          dealer.bidstuff();
-          dealer = dealer.getLeft();
-        }
+              dealer.drawHand(window);
+              dealer.bidstuff();
+              dealer = dealer.getLeft();
+            }
 
 		    window.repaint();
 		    window.Lock("ALL");
 
 		    window.createBidFrame(dealer, contract);
 
-        while (!(contract.isFinal())) { zzz(0); }
+            while (!(contract.isFinal())) { zzz(0); }
 
-        zzz(2000);
+           zzz(2000);
 
-        window.closeBidFrame();
+           window.closeBidFrame();
 
-		    if(contract.getWinner() != "PASS") {
+		   if(!contract.getWinner().equals("PASS")) {
+             window.ShowContract(contract);
+             declarer = dealer;
+           }
 
-        window.ShowContract(contract);
+          while(declarer.getPosition() != contract.getWinner()) {
+            declarer = declarer.getLeft();
+          }
 
-        declarer = dealer;
+          window.placeDeclarer(declarer);
 
-        while(declarer.getPosition() != contract.getWinner()) {
-			    declarer = declarer.getLeft();
-        }
+          declarer = declarer.getLeft();
+          declarer = declarer.getLeft();
+          declarer.flipHand(window);
+          dummy = declarer;
+          declarer = declarer.getLeft();
+          declarer = declarer.getLeft();
 
-        window.placeDeclarer(declarer);
-
-        declarer = declarer.getLeft();
-        declarer = declarer.getLeft();
-        declarer.flipHand(window);
-        dummy = declarer;
-        declarer = declarer.getLeft();
-        declarer = declarer.getLeft();
-
-			  if(declarer.getPosition() != "SOUTH" && dummy.getPosition() != "NORTH") {
-          zzz(2000);
-        }
+          if(declarer.getPosition() != "SOUTH" && dummy.getPosition() != "NORTH") {
+            zzz(2000);
+          }
 
         for(int k=0; k<13; ++k) {
           if(stop_var) return;
@@ -674,34 +658,28 @@ class WorkerThread implements Runnable {
           if(dPos.equals("WEST"))  { computerDeclarer(dPos); } else
           if(dPos.equals("NORTH")) { partnerDeclarer();      }
 
-			    try{ Thread.sleep(400);} catch( InterruptedException ie) {}
+          zzz(400);
+          findWinner();
 
-			    findWinner();
+          zzz(1500);
 
-			    try{ Thread.sleep(1500);}
-			    catch( InterruptedException ie) {}
+		  window.clearCenter();
 
-			    window.clearCenter();
-
-			    if(declarer.getPosition() == "EAST" || declarer.getPosition() == "WEST" ||
-			     ((declarer.getPosition() == "NORTH"|| declarer.getPosition() == "SOUTH") &&
-				dummy.getPosition() != "NORTH")) {
-				try{ Thread.sleep(600);}
-				catch( InterruptedException ie) {}
-			    }
-			}
-			calculateScore();
+          if(!dummy.getPosition().equals("NORTH")) {
+            if(dPos.equals("EAST") || dPos.equals("WEST") || dPos.equals("NORTH") || dPos.equals("SOUTH")) {
+              zzz(300);
+              calculateScore();
 		    }
-		}
+          }
 
 		if(nsScore >= 100) {
-		    ++nsGames;
+		    nsGames++;
 		    nsScore = 0;
 		    weScore = 0;
 		    vulnerable |= 0x0001;
 		}
 		if(weScore >= 100) {
-		    ++weGames;
+		    weGames++;
 		    nsScore = 0;
 		    weScore = 0;
 		    vulnerable |= 0x0002;
@@ -715,17 +693,18 @@ class WorkerThread implements Runnable {
 
 	    window.gameOverBar();
 
-	    if(nsGames > 2)
-		getRubberBonus(0);
-	    else if(weGames > 2)
-		getRubberBonus(1);
+	    if(nsGames > 2) getRubberBonus(0);
+	    else if(weGames > 2) getRubberBonus(1);
 
 	    window.removeDeclarer(declarer.getPosition());
 	    window.removeDealer(dealer.getPosition());
 	    window.gameTotal(nsAboveLine, weAboveLine);
+      }
+      }
 	}
 
   private void zzz(int t) {
     try{ Thread.sleep(t);} catch( InterruptedException ie) {}
   }
+
 }
