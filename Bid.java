@@ -25,10 +25,10 @@ public class Bid {
 	 * Constructor *
 	 ***************/
 	Bid () {
-	    this.numSuit = new int[4];
-	    this.numScore = new int[4];
+	    this.numSuit   = new int[4];
+	    this.numScore  = new int[4];
 	    this.finalSuit = -1;
-	    this.finalNum = -1;
+	    this.finalNum  = -1;
 	}
 
 
@@ -43,28 +43,24 @@ public class Bid {
 	 * Aces are 4 pts, Kings are 3, Queens are 2, and Jacks are 1 pt, *****
 	 * also, the number of cards for each suit are counted ****************
 	 **********************************************************************/
-	public void calculateStats(Card[] card) {
-	    int place = -1;
+  public void calculateStats(Card[] card) {
+    int place = -1;
 
-	    for(int i=0; i<13; ++i) {
-		place = card[i].getNumSuit();
+    for(int i=0; i<13; ++i) {
+      place = card[i].getNumSuit();
 
-		numSuit[place]++;
+      numSuit[place]++;
 
-		switch(card[i].getValue()) {
-		    case 11: numScore[place] += 1;
-			     break;
-		    case 12: numScore[place] += 2;
-			     break;
-		    case 13: numScore[place] += 3;
-			     break;
-		    case 14: numScore[place] += 4;
-			     break;
-		}
-	    }
+      switch(card[i].getValue()) {
+        case 11: numScore[place] += 1; break;
+        case 12: numScore[place] += 2; break;
+        case 13: numScore[place] += 3; break;
+        case 14: numScore[place] += 4; break;
+      }
+    }
 
-		calculateBid();
-	}
+    calculateBid();
+  }
 
 	/**********************************************************************
 	 * calculateBid() *****************************************************
@@ -72,49 +68,28 @@ public class Bid {
 	 * Determines what the max bid for the computer should be based on ****
 	 * the number and point value for each suit ***************************
 	 **********************************************************************/
-	private void calculateBid() {
-	    int tmpMax = 0;
-	    int tmpSuit = 0;
-	    int totalScore = 0;
-	    boolean balanced = true;
+  private void calculateBid() {
+    int tmpMax = 0;
+    int tmpSuit = 0;
+    int totalScore = 0;
+    boolean balanced = true;
 
-	    for(int j=0; j<4; ++j) {
-		switch(numSuit[j]) {
-		    case 13: if(numScore[j] >= 9) {
-				finalSuit = j;
-				finalNum = 7;
-			     }
-			     break;
-		    case 12: if(numScore[j] >= 9) {
-				finalSuit = j;
-				finalNum = 7;
-			     } else if(numScore[j] >= 7) {
-				finalSuit = j;
-				finalNum = 6;
-			     }
-			     break;
-		    case 11: if(numScore[j] >= 9) {
-				finalSuit = j;
-				finalNum = 7;
-			     } else if(numScore[j] >= 7) {
-				finalSuit = j;
-				finalNum = 6;
-			     }
-			     break;
-		    case 10: if(numScore[j] >= 7) {
-				finalSuit = j;
-				finalNum = 6;
-			     }
-			     break;
-		    case 8: numScore[j] += 4;
-			    break;
-		    case 7: numScore[j] += 3;
-			    break;
-		    case 6: numScore[j] += 2;
-			    break;
-		    case 5: numScore[j] += 1;
-			    break;
-		}
+    for(int j=0; j<4; ++j) {
+      switch(numSuit[j]) {
+        case 13:
+          if(numScore[j] >= 9) { finalSuit = j; finalNum = 7; }        break;
+        case 12:
+          if(numScore[j] >= 9) { finalSuit = j; finalNum = 7; }
+          else if(numScore[j] >= 7) { finalSuit = j; finalNum = 6; }   break;
+        case 11:
+          if(numScore[j] >= 9) { finalSuit = j; finalNum = 7; }
+          else if(numScore[j] >= 7) { finalSuit = j; finalNum = 6; }   break;
+        case 10: if(numScore[j] >= 7) { finalSuit = j; finalNum = 6; } break;
+        case 8: numScore[j] += 4; break;
+        case 7: numScore[j] += 3; break;
+        case 6: numScore[j] += 2; break;
+        case 5: numScore[j] += 1; break;
+    }
 
 		if(numScore[j] > tmpMax) {
 		    tmpMax = numScore[j];
