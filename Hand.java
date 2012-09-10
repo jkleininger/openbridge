@@ -23,11 +23,11 @@ public class Hand {
      * Private class members *
      *************************/
 	private boolean player;
-	private Hand left;
-	private Card[] cards;
-	public int numCrds;
-	private String position;
-	private Bid bid;
+	private Hand    left;
+	private Card[]  cards;
+	public int      numCrds;
+	private String  position;
+	private Bid     bid;
 
 
 	/****************
@@ -258,43 +258,43 @@ public class Hand {
 	 **********************************************************************
 	 * Determines what card the computer should play: *********************
 	 **********************************************************************/
-	public Card computePlay(OpenBridgeGUI g, Hand dummy, int suit, int trump, Card[] curr_hand, boolean[][] alreadyPlayed) {
-	    int tmp_suit = 0;
-	    int spot = -1;
-	    int dummyPos = -1;
-	    int[] places = new int[3];
-	    Card tmp_card = new Card();
-	    boolean OnSuitFlag = false;
-	    boolean TrumpFlag = false;
+  public Card computePlay(OpenBridgeGUI g, Hand dummy, int suit, int trump, Card[] curr_hand, boolean[][] alreadyPlayed) {
+    int     tmp_suit = 0;
+    int     spot = -1;
+    int     dummyPos = -1;
+    int[]   places; // = new int[3];
+    Card    tmp_card = new Card();
+    boolean OnSuitFlag = false;
+    boolean TrumpFlag = false;
 
 
-	    if(this.position == "WEST") {
-		places[0] = 3;
-		places[1] = 2;
-		places[2] = 0;
-	    } else if(this.position == "EAST") {
-		places[0] = 1;
-		places[1] = 0;
-		places[2] = 2;
-	    } else if(this.position == "NORTH") {
-		places[0] = 0;
-		places[1] = 3;
-		places[2] = 1;
-	    } else if(this.position == "SOUTH") {
-		places[0] = 2;
-		places[1] = 1;
-		places[2] = 3;
-	    }
+    if(this.position == "WEST") {
+      places[0] = 3;
+      places[1] = 2;
+      places[2] = 0;
+    } else if(this.position == "EAST") {
+      places[0] = 1;
+      places[1] = 0;
+      places[2] = 2;
+    } else if(this.position == "NORTH") {
+      places[0] = 0;
+      places[1] = 3;
+      places[2] = 1;
+    } else if(this.position == "SOUTH") {
+      places[0] = 2;
+      places[1] = 1;
+      places[2] = 3;
+    }
 
-	    if(dummy.getPosition() == "WEST") {
-		dummyPos = 1;
-	    } else if(dummy.getPosition() == "EAST") {
-		dummyPos = 3;
-	    } else if(dummy.getPosition() == "NORTH") {
-		dummyPos = 2;
-	    } else if(dummy.getPosition() == "SOUTH") {
-		dummyPos = 0;
-	    }
+    if(dummy.getPosition() == "WEST") {
+      dummyPos = 1;
+    } else if(dummy.getPosition() == "EAST") {
+      dummyPos = 3;
+    } else if(dummy.getPosition() == "NORTH") {
+     dummyPos = 2;
+    } else if(dummy.getPosition() == "SOUTH") {
+      dummyPos = 0;
+    }
 
 
 	    // if lead
