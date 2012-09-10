@@ -13,6 +13,9 @@ package openbridge;
  * Imports *
  ***********/
 import java.lang.Object;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**************
  * Hand class *
@@ -25,35 +28,40 @@ public class Hand {
 	private boolean player;
 	private Hand    left;
 	private Card[]  cards;
-	public int      numCrds;
+	public  int     numCrds;
 	private String  position;
 	private Bid     bid;
+
+  private ArrayList<Card> carda;
 
 
 	/****************
 	 * Constructors *
 	 ****************/
 	Hand () {
-           this.player = false;
-           this.left = null;
-           this.cards = new Card[13];
+           this.player  = false;
+           this.left    = null;
+           this.cards   = new Card[13];
            this.numCrds = 0;
+           this.carda   = new ArrayList<Card>();
 	}
 
 	Hand(boolean p, String pos) {
-           this.player = p;
-           this.left = null;
-           this.cards = new Card[13];
-           this.numCrds = 0;
-	   this.position = pos;
+           this.player   = p;
+           this.left     = null;
+           this.cards    = new Card[13];
+           this.numCrds  = 0;
+           this.position = pos;
+           this.carda    = new ArrayList<Card>();
 	}
 
 	Hand(boolean p, Hand l, String pos) {
-           this.player = p;
-           this.left = l;
-           this.cards = new Card[13];
-           this.numCrds = 0;
+           this.player   = p;
+           this.left     = l;
+           this.cards    = new Card[13];
+           this.numCrds  = 0;
            this.position = pos;
+           this.carda    = new ArrayList<Card>();
 	}
 
 
@@ -104,6 +112,7 @@ public class Hand {
 	 **********************************************************************/
 	public int getNumCrds() {
            return this.numCrds;
+    //return carda.size();
 	}
 
 	/**********************************************************************
@@ -113,6 +122,7 @@ public class Hand {
 	 **********************************************************************/
 	public Card getCard(int spot) {
            return this.cards[spot];
+    //return carda.get(spot);
 	}
 
 	/**********************************************************************
@@ -129,6 +139,9 @@ public class Hand {
 	    }
 	    numCrds--;
 
+    //Converting to ArrayList
+    carda.remove(spot);
+
 	    g.moveComputerCards(spot, numCrds, this.position);
 	}
 
@@ -139,8 +152,10 @@ public class Hand {
 	 * value both -1, junk values *****************************************
 	 **********************************************************************/
 	public void blankCard(int spot) {
-
 	    this.cards[spot] = new Card();
+
+    //Converting to ArrayList
+    this.carda.set(spot, new Card());
 	}
 
 	/**********************************************************************
@@ -173,7 +188,20 @@ public class Hand {
 		this.cards[this.numCrds] = c;
 
 	   this.numCrds += 1;
+
+    // converting to ArrayList
+    carda.add(c);
+    Collections.sort(carda, new Comparator<Card>(){
+      public int compare(Card c1, Card c2) {
+        return (c1.getSortValue() - c2.getSortValue());
+      }
+    });
+
+
 	}
+
+
+
 
 	/**********************************************************************
 	 * drawHand() *********************************************************
@@ -185,6 +213,13 @@ public class Hand {
 
 	   for(int i=0; i<13; ++i)
 		(this.cards[i]).display(this.isplayer(), g, this.position, i);
+
+    //converting to ArrayList
+//    int i = 0;
+//    for(Card c : carda) {
+//      c.display(this.isplayer(),g,this.position,i++);
+//    }
+
 	}
 
 	/**********************************************************************
@@ -197,6 +232,13 @@ public class Hand {
 
 	   for(int i=0; i<this.numCrds; ++i)
 		(this.cards[i]).flipCard(g, i);
+
+// converting to arraylist
+//    int i = 0;
+//    for(Card c : carda) {
+//      c.flipCard(g,i++);
+//    }
+
 	}
 
 	/**********************************************************************
@@ -209,6 +251,8 @@ public class Hand {
 	    this.cards = new Card[13];
 	    this.numCrds = 0;
 
+      carda.clear();
+
 	}
 
 	/**********************************************************************
@@ -219,24 +263,37 @@ public class Hand {
 	 **********************************************************************/
 	public void unlock(OpenBridgeGUI g, int suit) {
 
-	    int spot = -1;
-	    int end = 0;
+    int spot = -1;
+    int end  = 0;
+    int i    = 0;
 
-	    if(suit == 4)
-		g.Unlock(this.position, 0, (this.numCrds-1));
-	    else {
-		for(int i=0; i<this.numCrds; ++i) {
-		    if(spot == -1 && (this.cards[i]).getNumSuit() == suit) {
-			spot = i;
-			end = i;
-		    } else if((this.cards[i]).getNumSuit() == suit)
-			end = i;
-		}
-		if(spot == -1)
-		    g.Unlock(this.position, 0, (this.numCrds-1));
-		else
-		    g.Unlock(this.position, spot, end);
-	    }
+    if(suit == 4) {
+      g.Unlock(this.position, 0, (this.numCrds-1));
+      //g.Unlock(this.position,0,(carda.size()-1));
+    }
+    else {
+      for(i=0; i<this.numCrds; ++i) {
+      //for(Card c : carda) {
+        if(spot == -1 && (this.cards[i]).getNumSuit() == suit) {
+        //if((spot == -1) && c.getNumSuit() == suit) {
+          spot = i;
+          end = i;
+          //i++ somewhere in here
+        }
+        else if((this.cards[i]).getNumSuit() == suit) {
+        //else if(c.getNumSuit()==suit) {
+          end = i;
+        }
+      }
+      if(spot == -1) {
+        g.Unlock(this.position, 0, (this.numCrds-1));
+        //g.Unlock(this.position, 0, carda.size()-1);
+      }
+      else {
+        g.Unlock(this.position, spot, end);
+      }
+    }
+
 	}
 
 	/**********************************************************************
@@ -259,13 +316,13 @@ public class Hand {
 	 * Determines what card the computer should play: *********************
 	 **********************************************************************/
   public Card computePlay(OpenBridgeGUI g, Hand dummy, int suit, int trump, Card[] curr_hand, boolean[][] alreadyPlayed) {
-    int     tmp_suit = 0;
-    int     spot = -1;
-    int     dummyPos = -1;
-    int[]   places; // = new int[3];
-    Card    tmp_card = new Card();
+    int     tmp_suit   = 0;
+    int     spot       = -1;
+    int     dummyPos   = -1;
+    int[]   places     = new int[3];
+    Card    tmp_card   = new Card();
     boolean OnSuitFlag = false;
-    boolean TrumpFlag = false;
+    boolean TrumpFlag  = false;
 
 
     if(this.position == "WEST") {

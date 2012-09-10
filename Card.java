@@ -12,19 +12,19 @@ public class Card {
   private String[] sSuit = {"Club","Diamond","Heart","Spade"};
 
   Card(int s, int v, String f, String b) {
-    this.suit  = s;
-    this.value = v;
-    this.face  = f;
-    this.back  = b;
-    this.pos   = null;
+    this.suit      = s;
+    this.value     = v;
+    this.face      = f;
+    this.back      = b;
+    this.pos       = null;
   }
 
   Card() {
-    this.suit  = -1;
-    this.value = -1;
-    this.face  = null;
-    this.back  = null;
-    this.pos   = null;
+    this.suit      = -1;
+    this.value     = -1;
+    this.face      = null;
+    this.back      = null;
+    this.pos       = null;
   }
 
   public String getSuit()      { return sSuit[this.suit]; }

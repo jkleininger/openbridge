@@ -14,10 +14,10 @@ public class Contract {
 * Private class members *
 ************************/
 	private volatile String  Winner;
-	private String  condition;
-	private int     tricks;
-	private int     trump;
-  private boolean cFinal = false;
+	private String           condition;
+	private int              tricks;
+	private int              trump;
+  private boolean          cFinal;
 
   /**************
   * Constructor *
@@ -27,6 +27,7 @@ public class Contract {
     condition = "None";
     tricks    = 0;
     trump     = 0;
+    cFinal    = false;
   }
 
 	/**********************************************************************
@@ -35,13 +36,11 @@ public class Contract {
   * Sets the values of the contract to the values supplied              *
 	**********************************************************************/
 	public void setContract(String w, int t, int suit, String c) {
-    System.out.println("Setting contract: " + w + " wins!");
     this.Winner    = w;
 	  this.condition = c;
 	  this.tricks    = t;
 	  this.trump     = suit;
     this.cFinal    = true;
-    System.out.println(this.isFinal()?"FINAL":"NOT FINAL");
 	}
 
 	/**********************************************************************
@@ -79,6 +78,6 @@ public class Contract {
   * Returns false if the Winner field has not been set and true if       *
   * the field is anything but the default "None"                         *
   ***********************************************************************/
-  boolean isFinal() { return (this.cFinal); }
+  boolean isFinal()      { return (this.cFinal); }
 
 }
