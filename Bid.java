@@ -7,6 +7,8 @@
 
 package openbridge;
 
+import java.util.ArrayList;
+
 /*************
  * Bid class *
  *************/
@@ -43,15 +45,15 @@ public class Bid {
 	 * Aces are 4 pts, Kings are 3, Queens are 2, and Jacks are 1 pt, *****
 	 * also, the number of cards for each suit are counted ****************
 	 **********************************************************************/
-  public void calculateStats(Card[] card) {
+  public void calculateStats(ArrayList<Card> card) {
     int place = -1;
 
-    for(int i=0; i<13; ++i) {
-      place = card[i].getNumSuit();
+    for(Card c : card) {
+      place = c.getNumSuit();
 
       numSuit[place]++;
 
-      switch(card[i].getValue()) {
+      switch(c.getValue()) {
         case 11: numScore[place] += 1; break;
         case 12: numScore[place] += 2; break;
         case 13: numScore[place] += 3; break;

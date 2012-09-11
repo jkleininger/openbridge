@@ -27,7 +27,7 @@ public class Hand {
      *************************/
 	private boolean player;
 	private Hand    left;
-	private Card[]  cards;
+	//private Card[]  cards;
 	public  int     numCrds;
 	private String  position;
 	private Bid     bid;
@@ -41,7 +41,7 @@ public class Hand {
 	Hand () {
            this.player  = false;
            this.left    = null;
-           this.cards   = new Card[13];
+           //this.cards   = new Card[13];
            this.numCrds = 0;
            this.carda   = new ArrayList<Card>();
 	}
@@ -49,7 +49,7 @@ public class Hand {
 	Hand(boolean p, String pos) {
            this.player   = p;
            this.left     = null;
-           this.cards    = new Card[13];
+           //this.cards    = new Card[13];
            this.numCrds  = 0;
            this.position = pos;
            this.carda    = new ArrayList<Card>();
@@ -58,7 +58,7 @@ public class Hand {
 	Hand(boolean p, Hand l, String pos) {
            this.player   = p;
            this.left     = l;
-           this.cards    = new Card[13];
+           //this.cards    = new Card[13];
            this.numCrds  = 0;
            this.position = pos;
            this.carda    = new ArrayList<Card>();
@@ -69,80 +69,58 @@ public class Hand {
      * Public class members *
      ************************/
 
-	/**********************************************************************
-	 * isPlayer() *********************************************************
-	 **********************************************************************
-	 * Returns true if the current hand is the players hand ***************
-	 **********************************************************************/
-	public boolean isplayer() {
-           return this.player;
-	}
+  /*********************************************************************
+  * isPlayer() *********************************************************
+  **********************************************************************
+  * Returns true if the current hand is the players hand ***************
+  *********************************************************************/
+  public boolean isplayer() { return this.player; }
 
-	/**********************************************************************
-	 * addLeft() **********************************************************
-	 **********************************************************************
-	 * Adds a given hand to the left of the current hand ******************
-	 **********************************************************************/
-	public void addLeft(Hand l) {
-           this.left = l;
-	}
+  /*********************************************************************
+  * addLeft() **********************************************************
+  **********************************************************************
+  * Adds a given hand to the left of the current hand ******************
+  *********************************************************************/
+  public void addLeft(Hand l) { this.left = l; }
 
-	/**********************************************************************
-	 * getLeft() **********************************************************
-	 **********************************************************************
-	 * Returns Hand that is to the left of the current hand ***************
-	 **********************************************************************/
-	public Hand getLeft() {
-           return this.left;
-	}
+  /*********************************************************************
+  * getLeft() **********************************************************
+  **********************************************************************
+  * Returns Hand that is to the left of the current hand ***************
+  *********************************************************************/
+  public Hand getLeft() { return this.left; }
 
-	/**********************************************************************
-	 * getPosition() ******************************************************
-	 **********************************************************************
-	 * Returns the position of the current hand as a String ***************
-	 **********************************************************************/
-	public String getPosition() {
-           return this.position;
-	}
+  /*********************************************************************
+  * getPosition() ******************************************************
+  **********************************************************************
+  * Returns the position of the current hand as a String ***************
+  *********************************************************************/
+  public String getPosition() { return this.position; }
 
-	/**********************************************************************
-	 * getNumCrds() *******************************************************
-	 **********************************************************************
-	 * Returns the number of cards currently in the hand ******************
-	 **********************************************************************/
-	public int getNumCrds() {
-           return this.numCrds;
-    //return carda.size();
-	}
+  /*********************************************************************
+  * getNumCrds() *******************************************************
+  **********************************************************************
+  * Returns the number of cards currently in the hand ******************
+  *********************************************************************/
+  public int getNumCrds() { return carda.size(); }
 
-	/**********************************************************************
-	 * getCard() **********************************************************
-	 **********************************************************************
-	 * Returns the card from a specific spot in the hand ******************
-	 **********************************************************************/
-	public Card getCard(int spot) {
-           return this.cards[spot];
-    //return carda.get(spot);
-	}
+  /*********************************************************************
+  * getCard() **********************************************************
+  **********************************************************************
+  * Returns the card from a specific spot in the hand ******************
+  *********************************************************************/
+  public Card getCard(int spot) { return carda.get(spot); }
 
-	/**********************************************************************
-	 * removeCard() *******************************************************
-	 **********************************************************************
-	 * Removes a specific card from the hand and shifts the rest of the ***
-	 * cards down one spot, then calls moveComputerCards to update the ****
-	 * visual representation of the hand **********************************
-	 **********************************************************************/
-	public void removeCard(OpenBridgeGUI g, int spot) {
-
-	    for(int i=spot; i<(numCrds-1); ++i) {
-		cards[i] = cards[i + 1];
-	    }
-	    numCrds--;
-
-    //Converting to ArrayList
+  /*********************************************************************
+  * removeCard() *******************************************************
+  **********************************************************************
+  * Removes a specific card from the hand and shifts the rest of the ***
+  * cards down one spot, then calls moveComputerCards to update the ****
+  * visual representation of the hand **********************************
+  *********************************************************************/
+  public void removeCard(OpenBridgeGUI g, int spot) {
     carda.remove(spot);
-
-	    g.moveComputerCards(spot, numCrds, this.position);
+    g.moveComputerCards(spot, numCrds, this.position);
 	}
 
 	/**********************************************************************
@@ -151,12 +129,7 @@ public class Hand {
 	 * Instead of removing the card from the hand, make its suit and ******
 	 * value both -1, junk values *****************************************
 	 **********************************************************************/
-	public void blankCard(int spot) {
-	    this.cards[spot] = new Card();
-
-    //Converting to ArrayList
-    this.carda.set(spot, new Card());
-	}
+  public void blankCard(int spot) { this.carda.set(spot, new Card()); }
 
 	/**********************************************************************
 	 * addCard() **********************************************************
@@ -165,43 +138,13 @@ public class Hand {
 	 * using the cards getSortValue method ********************************
 	 **********************************************************************/
 	public void addCard(Card c) {
-
-	   Card temp;
-	   Card temp2;
-	   boolean flag = true;
-
-
-	   for(int i=0; i<this.numCrds; ++i) {
-		if((flag) && (c.getSortValue() < this.cards[i].getSortValue())) {
-		   temp2 = c;
-		   flag = false;
-
-		   for(int j=i; j<(this.numCrds+1); ++j) {
-			temp = this.cards[j];
-			this.cards[j] = temp2;
-			temp2 = temp;
-		   }
-		}
-	   }
-
-	   if(flag)
-		this.cards[this.numCrds] = c;
-
-	   this.numCrds += 1;
-
-    // converting to ArrayList
     carda.add(c);
     Collections.sort(carda, new Comparator<Card>(){
       public int compare(Card c1, Card c2) {
         return (c1.getSortValue() - c2.getSortValue());
       }
     });
-
-
-	}
-
-
-
+  }
 
 	/**********************************************************************
 	 * drawHand() *********************************************************
@@ -210,16 +153,10 @@ public class Hand {
 	 * card in the hand as well *******************************************
 	 **********************************************************************/
 	public void drawHand(OpenBridgeGUI g) {
-
-	   for(int i=0; i<13; ++i)
-		(this.cards[i]).display(this.isplayer(), g, this.position, i);
-
-    //converting to ArrayList
-//    int i = 0;
-//    for(Card c : carda) {
-//      c.display(this.isplayer(),g,this.position,i++);
-//    }
-
+    int i = 0;
+    for(Card c : carda) {
+      c.display(this.isplayer(),g,this.position,i++);
+    }
 	}
 
 	/**********************************************************************
@@ -229,17 +166,11 @@ public class Hand {
 	 * dummy's hand to the table ******************************************
 	 **********************************************************************/
 	public void flipHand(OpenBridgeGUI g) {
-
-	   for(int i=0; i<this.numCrds; ++i)
-		(this.cards[i]).flipCard(g, i);
-
-// converting to arraylist
-//    int i = 0;
-//    for(Card c : carda) {
-//      c.flipCard(g,i++);
-//    }
-
-	}
+    int i = 0;
+    for(Card c : carda) {
+      c.flipCard(g,i++);
+    }
+  }
 
 	/**********************************************************************
 	 * resetHand() ********************************************************
@@ -247,13 +178,8 @@ public class Hand {
 	 * Zeros out the array of cards and sets the number of cards to 0 *****
 	 **********************************************************************/
 	public void resetHand() {
-
-	    this.cards = new Card[13];
-	    this.numCrds = 0;
-
       carda.clear();
-
-	}
+  }
 
 	/**********************************************************************
 	 * unlock() ***********************************************************
@@ -268,26 +194,20 @@ public class Hand {
     int i    = 0;
 
     if(suit == 4) {
-      g.Unlock(this.position, 0, (this.numCrds-1));
-      //g.Unlock(this.position,0,(carda.size()-1));
+      g.Unlock(this.position,0,(carda.size()-1));
     }
     else {
-      for(i=0; i<this.numCrds; ++i) {
-      //for(Card c : carda) {
-        if(spot == -1 && (this.cards[i]).getNumSuit() == suit) {
-        //if((spot == -1) && c.getNumSuit() == suit) {
+      for(i=0; i<carda.size(); ++i) {
+        if(spot == -1 && (carda.get(i)).getNumSuit() == suit) {
           spot = i;
           end = i;
-          //i++ somewhere in here
         }
-        else if((this.cards[i]).getNumSuit() == suit) {
-        //else if(c.getNumSuit()==suit) {
+        else if((carda.get(i)).getNumSuit() == suit) {
           end = i;
         }
       }
       if(spot == -1) {
-        g.Unlock(this.position, 0, (this.numCrds-1));
-        //g.Unlock(this.position, 0, carda.size()-1);
+        g.Unlock(this.position, 0, (carda.size()-1));
       }
       else {
         g.Unlock(this.position, spot, end);
@@ -304,11 +224,19 @@ public class Hand {
 	 **********************************************************************/
 	public void playCard(OpenBridgeGUI g, int num) {
 
-	    (this.cards[num]).flipCard(g, num);
+	    carda.get(num).flipCard(g, num);
 	    removeCard(g, num);
-	    g.playComputer(this.position, this.numCrds);
+	    g.playComputer(this.position, carda.size());
 
 	}
+
+
+
+
+
+
+
+
 
 	/**********************************************************************
 	 * computerPlay() *****************************************************
@@ -323,7 +251,7 @@ public class Hand {
     Card    tmp_card   = new Card();
     boolean OnSuitFlag = false;
     boolean TrumpFlag  = false;
-
+    Card[]  cards      = (Card[]) carda.toArray(new Card[0]);
 
     if(this.position == "WEST") {
       places[0] = 3;
@@ -364,21 +292,21 @@ public class Hand {
 		    for(int i=0; i<dummy.getNumCrds(); ++i) {
 			if ((dummy.getCard(i)).getValue() == highestPlayable(alreadyPlayed, dummy.getCard(i).getNumSuit())) {
 			    for(int j=0; j<this.numCrds; ++j) {
-				if(dummy.getCard(i).getNumSuit() == this.cards[j].getNumSuit()) {
+				if(dummy.getCard(i).getNumSuit() == cards[j].getNumSuit()) {
 				    return playWinningCard(g, j);
 				}
 			    }
 			}
 		    }
 		    for(int k=0; k<this.numCrds; ++k) {
-			if(this.cards[k].getValue() == highestPlayable(alreadyPlayed, this.cards[k].getNumSuit()))
+			if(cards[k].getValue() == highestPlayable(alreadyPlayed, cards[k].getNumSuit()))
 			    return playWinningCard(g, k);
 		    }
 		    return playLowestNontrump(g, trump);
 
 		} else {
 		    for(int z=0; z<this.numCrds; ++z) {
-			if(this.cards[z].getValue() == highestPlayable(alreadyPlayed, this.cards[z].getNumSuit()))
+			if(cards[z].getValue() == highestPlayable(alreadyPlayed, cards[z].getNumSuit()))
 			    return playWinningCard(g, z);
 		    }
 		    return playLowestNontrump(g, trump);
@@ -388,7 +316,7 @@ public class Hand {
 	    else {
 		for(int z=0; z<this.numCrds; ++z) {
 		    //if have suit
-		    if((this.cards[z]).getNumSuit() == suit) {
+		    if((cards[z]).getNumSuit() == suit) {
 
 			OnSuitFlag = true;
 
@@ -402,7 +330,7 @@ public class Hand {
 				//am i the dummy?
 				if(this.position == dummy.getPosition()) {
 				    if(curr_hand[(places[0])] == null) {
-					if(this.cards[z].getValue() > curr_hand[(places[2])].getValue())
+					if(cards[z].getValue() > curr_hand[(places[2])].getValue())
 					    return playWinningCard(g, z);
 
 				    } else {
@@ -413,7 +341,7 @@ public class Hand {
 
 						return playLowestSuit(g, suit);
 					    } else {
-						if(this.cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+						if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
 						   curr_hand[(places[2])].getNumSuit() == suit) {
 							return playWinningCard(g, z);
 						}
@@ -427,13 +355,13 @@ public class Hand {
 
 						    return playLowestSuit(g, suit);
 						} else {
-						    if(this.cards[z].getValue() > curr_hand[(places[2])].getValue() &&
-						       this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
+						    if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+						       cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
 							return playWinningCard(g, z);
 						}
 					    } else {
-						if(this.cards[z].getValue() > curr_hand[(places[1])].getValue()) {
-						    if(this.cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+						if(cards[z].getValue() > curr_hand[(places[1])].getValue()) {
+						    if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
 						       curr_hand[(places[2])].getNumSuit() == suit)
 							return playWinningCard(g, z);
 						}
@@ -449,8 +377,8 @@ public class Hand {
 
 				    //can the dummy be beat?
 				    if(tmp_card.getNumSuit() == suit) {
-					    if(this.cards[z].getNumSuit() == suit) {
-						if(this.cards[z].getValue() > tmp_card.getValue()) {
+					    if(cards[z].getNumSuit() == suit) {
+						if(cards[z].getValue() > tmp_card.getValue()) {
 						    if(curr_hand[(places[0])] != null) {
 							if(curr_hand[(places[0])].getNumSuit() == tmp_card.getNumSuit() &&
 							    curr_hand[(places[0])].getValue() > tmp_card.getValue()) {
@@ -461,18 +389,18 @@ public class Hand {
 								curr_hand[(places[2])].getNumSuit() != trump)) {
 								return playLowestSuit(g, suit);
 							    } else {
-								if(this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-								   this.cards[z].getValue() > curr_hand[(places[2])].getValue())
+								if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+								   cards[z].getValue() > curr_hand[(places[2])].getValue())
 								    return playWinningCard(g, z);
 							    }
 							} else {
-							    if(this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-							       this.cards[z].getValue() > curr_hand[(places[2])].getValue())
+							    if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+							       cards[z].getValue() > curr_hand[(places[2])].getValue())
 								return playWinningCard(g, z);
 							}
 						    } else {
-							if(this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-							   this.cards[z].getValue() > curr_hand[(places[2])].getValue()) {
+							if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+							   cards[z].getValue() > curr_hand[(places[2])].getValue()) {
 							    return playWinningCard(g, z);
 							}
 						    }
@@ -489,8 +417,8 @@ public class Hand {
 						return playLowestSuit(g, suit);
 					    }
 					}
-					if(this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-					   this.cards[z].getValue() > curr_hand[(places[2])].getValue()) {
+					if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+					   cards[z].getValue() > curr_hand[(places[2])].getValue()) {
 						return playWinningCard(g, z);
 					}
 
@@ -499,7 +427,7 @@ public class Hand {
 				    }
 				} else { //dummy has played
 				    if(curr_hand[(places[0])] == null) {
-					    if(this.cards[z].getNumSuit() == suit && this.cards[z].getValue() > curr_hand[(places[2])].getValue()) {
+					    if(cards[z].getNumSuit() == suit && cards[z].getValue() > curr_hand[(places[2])].getValue()) {
 						return playWinningCard(g, z);
 					    }
 				    } else {
@@ -514,8 +442,8 @@ public class Hand {
 						if(curr_hand[(places[2])].getNumSuit() == trump && suit != trump) {
 						    return playLowestSuit(g, suit);
 						} else {
-							if(this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-							   this.cards[z].getValue() > curr_hand[(places[2])].getValue()) {
+							if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+							   cards[z].getValue() > curr_hand[(places[2])].getValue()) {
 							    return playWinningCard(g, z);
 							}
 						}
@@ -531,8 +459,8 @@ public class Hand {
 
 						    return playLowestSuit(g, suit);
 						} else {
-						    if(this.cards[z].getValue() > curr_hand[(places[2])].getValue() &&
-						       this.cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
+						    if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+						       cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
 							return playWinningCard(g, z);
 						}
 
@@ -542,11 +470,11 @@ public class Hand {
 						    trump != suit) {
 						    return playLowestSuit(g, suit);
 						} else {
-						    if(this.cards[z].getNumSuit() == suit &&
-						       this.cards[z].getValue() > curr_hand[(places[1])].getValue()) {
+						    if(cards[z].getNumSuit() == suit &&
+						       cards[z].getValue() > curr_hand[(places[1])].getValue()) {
 
 							if((curr_hand[(places[2])].getNumSuit() == suit &&
-							    this.cards[z].getValue() > curr_hand[(places[2])].getValue()) ||
+							    cards[z].getValue() > curr_hand[(places[2])].getValue()) ||
 							   (curr_hand[(places[2])].getNumSuit() != suit &&
 							    curr_hand[(places[2])].getNumSuit() != trump)) {
 							    return playWinningCard(g, z);
@@ -567,7 +495,7 @@ public class Hand {
 
 		if(trump != suit && trump != 4) {
 		    for(int i=0; i<this.numCrds; ++i) {
-			if(this.cards[i].getNumSuit() == trump) {
+			if(cards[i].getNumSuit() == trump) {
 
 			    TrumpFlag = true;
 
@@ -608,14 +536,14 @@ public class Hand {
 						return playLowestNontrump(g, trump);
 					    } else {
 						if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 
 						    return playWinningCard(g, i);
 						}
 					    }
 					} else {
 					    if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
-					       curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+					       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 
 						return playWinningCard(g, i);
 					    }
@@ -636,7 +564,7 @@ public class Hand {
 
 						return playLowestNontrump(g, trump);
 					    } else {
-						if((this.cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+						if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
 						    curr_hand[(places[2])].getNumSuit() == trump) ||
 						    curr_hand[(places[2])].getNumSuit() != trump) {
 							return playWinningCard(g, i);
@@ -651,16 +579,16 @@ public class Hand {
 
 						    return playLowestNontrump(g, trump);
 						} else {
-						    if((this.cards[i].getValue() > curr_hand[(places[2])].getValue() &&
-							this.cards[i].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+						    if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+							cards[i].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
 							curr_hand[(places[2])].getNumSuit() != trump)
 							return playWinningCard(g, i);
 						}
 					    } else {
-						if((this.cards[i].getValue() > curr_hand[(places[1])].getValue() &&
-						    this.cards[i].getNumSuit() == suit) || curr_hand[(places[1])].getNumSuit() != trump) {
-						    if((this.cards[i].getValue() > curr_hand[(places[2])].getValue() &&
-						        this.cards[i].getNumSuit() == suit) || curr_hand[(places[2])].getNumSuit() != trump)
+						if((cards[i].getValue() > curr_hand[(places[1])].getValue() &&
+						    cards[i].getNumSuit() == suit) || curr_hand[(places[1])].getNumSuit() != trump) {
+						    if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+						        cards[i].getNumSuit() == suit) || curr_hand[(places[2])].getNumSuit() != trump)
 							return playWinningCard(g, i);
 						}
 					    }
@@ -689,7 +617,7 @@ public class Hand {
 					    } else {
 						if(curr_hand[(places[2])].getNumSuit() == suit ||
 						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 						    return playWinningCard(g, i);
 						}
 					    }
@@ -697,14 +625,14 @@ public class Hand {
 				    } else {
 					if(tmp_card.getNumSuit() == trump) {
 					    if(curr_hand[(places[0])] == null) {
-						if(this.cards[i].getValue() > tmp_card.getValue()) {
+						if(cards[i].getValue() > tmp_card.getValue()) {
 						    return playWinningCard(g, i);
 						}
 					    } else {
-						if(this.cards[i].getValue() > tmp_card.getValue()) {
+						if(cards[i].getValue() > tmp_card.getValue()) {
 						    if(curr_hand[(places[2])].getNumSuit() == suit ||
 						      (curr_hand[(places[2])].getNumSuit() == trump &&
-						       curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 
 							return playWinningCard(g, i);
 						    }
@@ -725,7 +653,7 @@ public class Hand {
 					    } else {
 						if(curr_hand[(places[2])].getNumSuit() != trump ||
 						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 
 						    return playWinningCard(g, i);
 						}
@@ -742,14 +670,14 @@ public class Hand {
 						} else {
 						    if(curr_hand[(places[2])].getNumSuit() != trump ||
 						      (curr_hand[(places[2])].getNumSuit() == trump &&
-						       curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 							return playWinningCard(g, i);
 						    }
 						}
 					    } else {
 						if(curr_hand[(places[2])].getNumSuit() != trump ||
 						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < this.cards[i].getValue())) {
+						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
 						    return playWinningCard(g, i);
 						}
 					    }
@@ -773,6 +701,7 @@ public class Hand {
 
 	private Card notLeadPartnerDummy(Card[] curr_hand, OpenBridgeGUI g, Hand dummy, int suit, int trump, int[] places, boolean[][] alreadyPlayed) {
 	    Card tmp_card = new Card();
+      Card[]  cards      = (Card[]) carda.toArray();
 
 	    //partner hasn't played
 	    if(curr_hand[(places[0])] == null) {
@@ -785,8 +714,8 @@ public class Hand {
 		    }
 		}
 		for(int j=0; j<this.numCrds; ++j) {
-		    if(this.cards[j].getNumSuit() == suit && this.cards[j].getValue() == highestPlayable(alreadyPlayed, suit)) {
-			if(this.cards[j].getValue() > curr_hand[(places[2])].getValue()) {
+		    if(cards[j].getNumSuit() == suit && cards[j].getValue() == highestPlayable(alreadyPlayed, suit)) {
+			if(cards[j].getValue() > curr_hand[(places[2])].getValue()) {
 			    return playWinningCard(g, j);
 			}
 		    } else {
@@ -812,8 +741,8 @@ public class Hand {
 				return playLowestSuit(g, suit);
 			    } else {
 				for(int k=0; k<this.numCrds; ++k) {
-				    if(this.cards[k].getValue() > curr_hand[(places[2])].getValue() &&
-				       this.cards[k].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
+				    if(cards[k].getValue() > curr_hand[(places[2])].getValue() &&
+				       cards[k].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
 					return playWinningCard(g, k);
 				    }
 				}
@@ -830,9 +759,9 @@ public class Hand {
 			else {
 			    //else if can win
 			    for(int l=0; l<this.numCrds; ++l) {
-				if(this.cards[l].getNumSuit() == suit) {
-				    if((this.cards[l].getValue() > curr_hand[(places[1])].getValue() && curr_hand[(places[1])].getNumSuit() == suit) &&
-				       (this.cards[l].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)) {
+				if(cards[l].getNumSuit() == suit) {
+				    if((cards[l].getValue() > curr_hand[(places[1])].getValue() && curr_hand[(places[1])].getNumSuit() == suit) &&
+				       (cards[l].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)) {
 					return playWinningCard(g, l);
 				    }
 				}
@@ -853,8 +782,8 @@ public class Hand {
 			    return playLowestSuit(g, suit);
 			} else {
 			    for(int m=0; m<this.numCrds; ++m) {
-				if(this.cards[m].getValue() > curr_hand[(places[2])].getValue() &&
-				   this.cards[m].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
+				if(cards[m].getValue() > curr_hand[(places[2])].getValue() &&
+				   cards[m].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
 				    return playWinningCard(g, m);
 				}
 			    }
@@ -866,158 +795,158 @@ public class Hand {
 	    return tmp_card;
 	}
 
-	/**********************************************************************
-	 * highestPlayable() **************************************************
-	 **********************************************************************
-	 * Determines the value of the highest card not yet played for a ******
-	 * given suit based on the previous hands *****************************
-	 **********************************************************************/
-	private int highestPlayable(boolean[][] aP, int suit) {
 
-	    for(int i=0; i<13; ++i) {
-		if(aP[suit][i] == false) {
-		    return (14 - i);
-		}
-	    }
-	    return -1;
-	}
 
-	/**********************************************************************
-	 * playLowestSuit() ***************************************************
-	 **********************************************************************
-	 * Plays the lowest value card of a given suit ************************
-	 **********************************************************************/
-	private Card playLowestSuit(OpenBridgeGUI g, int suit) {
-	    Card tmp_card = new Card();
 
-	    for(int i=0; i<this.numCrds; ++i) {
-		if((this.cards[i]).getNumSuit() == suit) {
-		    tmp_card = this.cards[i];
-		    playCard(g, i);
-		    return tmp_card;
-		}
-	    }
-	    return tmp_card;
-	}
 
-	/**********************************************************************
-	 * playLowestNonTrump() ***********************************************
-	 **********************************************************************
-	 * Determines the lowest value card that is not of trump, if no card **
-	 * exists in the hand, the lowest value trump is played ***************
-	 **********************************************************************/
-	private Card playLowestNontrump(OpenBridgeGUI g, int trump) {
-	    Card tmp_card = new Card();
-	    int spot = 0;
 
-	    tmp_card = this.cards[spot];
 
-	    for(int i=0; i<this.numCrds; ++i) {
-		if(this.cards[i].getNumSuit() != trump) {
-		    if(tmp_card.getNumSuit() == trump) {
-			tmp_card = this.cards[i];
-			spot = i;
-		    } else if(this.cards[i].getValue() < tmp_card.getValue()) {
-			tmp_card = this.cards[i];
-			spot = i;
-		    }
-		}
-	    }
 
-	    return playWinningCard(g, spot);
-	}
 
-	/**********************************************************************
-	 * playLowestCard() ***************************************************
-	 **********************************************************************
-	 * Determines and plays the lowest value card in the hand  ************
-	 * regardless of the cards suit ***************************************
-	 **********************************************************************/
-	private Card playLowestCard(OpenBridgeGUI g) {
-	    Card tmp_card = new Card();
-	    int spot = 0;
 
-	    tmp_card = this.cards[0];
+  /*********************************************************************
+  * highestPlayable() **************************************************
+  **********************************************************************
+  * Determines the value of the highest card not yet played for a ******
+  * given suit based on the previous hands *****************************
+  *********************************************************************/
+  private int highestPlayable(boolean[][] aP, int suit) {
+    for(int i=0; i<13; ++i) {
+      if(aP[suit][i] == false) { return (14 - i); }
+    }
+    return -1;
+  }
 
-	    for(int i=1; i<this.numCrds; ++i) {
-		if(this.cards[i].getValue() < tmp_card.getValue()) {
-		    tmp_card = this.cards[i];
-		    spot = i;
-		}
-	    }
-	    return playWinningCard(g, spot);
-	}
+  /*********************************************************************
+  * playLowestSuit() ***************************************************
+  **********************************************************************
+  * Plays the lowest value card of a given suit ************************
+  *********************************************************************/
+  private Card playLowestSuit(OpenBridgeGUI g, int suit) {
+    Card tmp_card = new Card();
 
-	/**********************************************************************
-	 * playWinningCard() **************************************************
-	 **********************************************************************
-	 * Plays a card in a specific position of the hand and returns ********
-	 * the same card ******************************************************
-	 **********************************************************************/
-	private Card playWinningCard(OpenBridgeGUI g, int pos) {
-	    Card tmp_card = new Card();
+    for(int i=0; i<carda.size(); ++i) {
+      if(carda.get(i).getNumSuit() == suit) {
+        tmp_card = this.carda.get(i);
+        playCard(g, i);
+        return tmp_card;
+      }
+    }
+    return tmp_card;
+  }
 
-	    tmp_card = this.cards[pos];
-	    playCard(g, pos);
-	    return tmp_card;
-	}
+  /*********************************************************************
+  * playLowestNonTrump() ***********************************************
+  **********************************************************************
+  * Determines the lowest value card that is not of trump, if no card **
+  * exists in the hand, the lowest value trump is played ***************
+  *********************************************************************/
+  private Card playLowestNontrump(OpenBridgeGUI g, int trump) {
+    Card tmp_card = new Card();
+    int spot = 0;
 
-	/**********************************************************************
-	 * checkDummy() *******************************************************
-	 **********************************************************************
-	 * Returns the highest on suit card in the dummys hand, or the ********
-	 * highest trump in the dummys hand, if the dummy has no cards of *****
-	 * the suit or trump, a blank card is returned ************************
-	 **********************************************************************/
-	private Card checkDummy(Hand dummy, int suit, int trump) {
-	    Card tmp_card = new Card();
+    tmp_card = this.carda.get(spot);
 
-	    //does dummy have any of the suit lead?
-	    for(int i=0; i<dummy.getNumCrds(); ++i) {
-		if(dummy.getCard(i).getNumSuit() == suit) {
-		    if(dummy.getCard(i).getValue() > tmp_card.getValue())
-			tmp_card = dummy.getCard(i);
-		}
-	    }
-	    //dummy doesn't have any suit lead, what about trump
-	    if(tmp_card.getValue() == -1) {
-		for(int j=0; j<dummy.getNumCrds(); ++j) {
-		    if(dummy.getCard(j).getNumSuit() == trump) {
-			tmp_card = dummy.getCard(j);
-		    }
-		}
-	    }
+    for(int i=0; i<carda.size(); ++i) {
+      if(this.carda.get(i).getNumSuit() != trump) {
+        if(tmp_card.getNumSuit() == trump) {
+          tmp_card = this.carda.get(i);
+          spot = i;
+        } else if(this.carda.get(i).getValue() < tmp_card.getValue()) {
+          tmp_card = this.carda.get(i);
+          spot = i;
+        }
+      }
+    }
+    return playWinningCard(g, spot);
+  }
 
-	    return tmp_card;
-	}
+  /*********************************************************************
+  * playLowestCard() ***************************************************
+  **********************************************************************
+  * Determines and plays the lowest value card in the hand  ************
+  * regardless of the cards suit ***************************************
+  *********************************************************************/
+  private Card playLowestCard(OpenBridgeGUI g) {
+    Card tmp_card = new Card();
+    int spot = 0;
 
-	/**********************************************************************
-	 * bidStuff() *********************************************************
-	 **********************************************************************
-	 * Sets up the bid object for the hand and determines what the ********
-	 * maximum the hand should be bidding *********************************
-	 **********************************************************************/
-	public void bidstuff() {
-		bid = new Bid();
-		bid.calculateStats(this.cards);
-		//bid.debug();
-	}
+    tmp_card = this.carda.get(0);
 
-	/**********************************************************************
-	 * getMaxSuit() *******************************************************
-	 **********************************************************************
-	 * Returns the suit the hand should bid as an Int *********************
-	 **********************************************************************/
-	public int getMaxSuit() {
-	    return bid.getFinalSuit();
-	}
+    for(int i=1; i<carda.size(); ++i) {
+      if(this.carda.get(i).getValue() < tmp_card.getValue()) {
+        tmp_card = this.carda.get(i);
+        spot = i;
+      }
+    }
+    return playWinningCard(g, spot);
+  }
 
-	/**********************************************************************
-	 * getMaxValue() ******************************************************
-	 **********************************************************************
-	 * Returns the number of tricks the hand should bid as an Int *********
-	 **********************************************************************/
-	public int getMaxValue() {
-	    return bid.getFinalNum();
-	}
+  /*********************************************************************
+  * playWinningCard() **************************************************
+  **********************************************************************
+  * Plays a card in a specific position of the hand and returns ********
+  * the same card ******************************************************
+  *********************************************************************/
+  private Card playWinningCard(OpenBridgeGUI g, int pos) {
+    Card tmp_card = new Card();
+
+    tmp_card = this.carda.get(pos);
+    playCard(g, pos);
+    return tmp_card;
+  }
+
+  /*********************************************************************
+  * checkDummy() *******************************************************
+  **********************************************************************
+  * Returns the highest on suit card in the dummys hand, or the ********
+  * highest trump in the dummys hand, if the dummy has no cards of *****
+  * the suit or trump, a blank card is returned ************************
+  *********************************************************************/
+  private Card checkDummy(Hand dummy, int suit, int trump) {
+    Card tmp_card = new Card();
+
+    //does dummy have any of the suit lead?
+    for(int i=0; i<dummy.getNumCrds(); ++i) {
+      if(dummy.getCard(i).getNumSuit() == suit) {
+        if(dummy.getCard(i).getValue() > tmp_card.getValue())
+        tmp_card = dummy.getCard(i);
+      }
+    }
+    //dummy doesn't have any suit lead, what about trump
+    if(tmp_card.getValue() == -1) {
+      for(int j=0; j<dummy.getNumCrds(); ++j) {
+        if(dummy.getCard(j).getNumSuit() == trump) {
+          tmp_card = dummy.getCard(j);
+        }
+      }
+    }
+    return tmp_card;
+  }
+
+  /**********************************************************************
+  * bidStuff() *********************************************************
+  **********************************************************************
+  * Sets up the bid object for the hand and determines what the ********
+  * maximum the hand should be bidding *********************************
+  **********************************************************************/
+  public void bidstuff() {
+    bid = new Bid();
+    bid.calculateStats(carda);
+  }
+
+  /**********************************************************************
+  * getMaxSuit() *******************************************************
+  **********************************************************************
+  * Returns the suit the hand should bid as an Int *********************
+  **********************************************************************/
+  public int getMaxSuit() { return bid.getFinalSuit(); }
+
+  /**********************************************************************
+  * getMaxValue() ******************************************************
+  **********************************************************************
+  * Returns the number of tricks the hand should bid as an Int *********
+  **********************************************************************/
+  public int getMaxValue() { return bid.getFinalNum(); }
+
 }
