@@ -1,5 +1,6 @@
 /*****************************************************************************
-**************************** openbridge.java *********************************
+* openbridge.java                                                            *
+*                                                                            *
 * Initial code by Scott DiTomaso, 20 December 2009                           *
 * Kettering University                                                       *
 * Additional work by Jason K Leininger 2012                                  *
@@ -9,9 +10,6 @@ package openbridge;
 
 public class openbridge extends Thread {
 
-  /************************
-  * Private class members *
-  ************************/
   private static Hand           Player;
   private static Hand           Partner;
   private static Hand           Computer1;
@@ -21,27 +19,23 @@ public class openbridge extends Thread {
   private static Thread         BidThread = null;
   private static WorkerThread   BidWorker;
 
-  /************************
-  * Public class members *
-  ************************/
-
   /*********************************************************************
-  *main() **************************************************************
-  **********************************************************************
-  * Creates the underlying GUI for the game ****************************
+  * main()                                                             *
+  *                                                                    *
+  * Creates the underlying GUI                                         *
   *********************************************************************/
   public static void main(String args[]) {
     Windowx = new OpenBridgeGUI();
   }
 
-	/*********************************************************************
-	* newGame() **********************************************************
-	* When a new game is called for, stop the currently running thread   *
-	* if it exists and set up the window and players, then start the     *
-	* thread to handle the gameplay                                      *
-	*********************************************************************/
+  /*********************************************************************
+  * newGame() **********************************************************
+  * When a new game is called for, stop the currently running thread   *
+  * if it exists and set up the window and players, then start the     *
+  * thread to handle the gameplay                                      *
+  *********************************************************************/
   public static void newGame() {
-    if(BidThread != null) { BidWorker.stopThread(); }
+    if(BidThread != null) BidWorker.stopThread();
 
     Windowx.reset();
     Windowx.initComponents();
