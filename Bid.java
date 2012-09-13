@@ -50,18 +50,9 @@ public class Bid {
 
     for(Card c : card) {
       place = c.getNumSuit();
-
       numSuit[place]++;
-
-      switch(c.getValue()) {
-        case 11: numScore[place] += 1; break;
-        case 12: numScore[place] += 2; break;
-        case 13: numScore[place] += 3; break;
-        case 14: numScore[place] += 4; break;
-        default:                       break;
-      }
+      if(c.getValue()>10 && c.getValue()<15) { numScore[place]+=(c.getValue()-10); }
     }
-
     calculateBid();
   }
 
@@ -106,55 +97,49 @@ public class Bid {
     }
 
     for(int k=0; k<4; ++k) {
-      if(numSuit[k] < 2 || numSuit[k] > 4)
-        balanced = false;
-      }
-
-    if(totalScore < 11) {
-      finalNum = 0;
-    }
-    else if(totalScore > 10 && totalScore < 15) {
-      finalNum = 1;
-    }
-    else if(totalScore > 14 && totalScore < 18) {
-      if(balanced) {
-        finalNum = 1;
-        tmpSuit = 4;
-      } else { finalNum = 2; }
-    }
-    else if(totalScore > 17 && totalScore < 21) {
-      if(balanced) {
-        finalNum = 2;
-        tmpSuit = 4;
-      } else { finalNum = 3; }
-    }
-    else if(totalScore > 20 && totalScore < 24) {
-      if(balanced) {
-        finalNum = 3;
-        tmpSuit = 4;
-      } else { finalNum = 4; }
-    }
-    else if(totalScore > 23 && totalScore < 27) {
-      if(balanced) {
-        finalNum = 4;
-        tmpSuit = 4;
-      } else { finalNum = 5; }
-    }
-    else if(totalScore > 26 && totalScore < 30) {
-      finalNum = 5;
-      tmpSuit = 4;
-    }
-    else if(totalScore > 29 && totalScore < 33) {
-      finalNum = 6;
-      tmpSuit = 4;
-    }
-    else if (totalScore > 32) {
-      finalNum = 7;
-      tmpSuit = 4;
+      if(numSuit[k] < 2 || numSuit[k] > 4) balanced = false;
     }
 
-  finalSuit = tmpSuit;
+    totalScore=totalScore<11?10:(totalScore>32?33:totalScore);
+
+    switch(totalScore) {
+      case 10:  finalNum=0; break;
+      case 11:
+      case 12:
+      case 13:
+      case 14:  finalNum=1; break;
+      case 15:
+      case 16:
+      case 17:  finalNum=balanced?1:2;
+                tmpSuit=balanced?4:tmpSuit; break;
+      case 18:
+      case 19:
+      case 20:  finalNum=balanced?2:3;
+                tmpSuit=balanced?4:tmpSuit; break;
+      case 21:
+      case 22:
+      case 23:  finalNum=balanced?3:4;
+                tmpSuit=balanced?4:tmpSuit; break;
+      case 24:
+      case 25:
+      case 26:  finalNum=balanced?4:5;
+                tmpSuit=balanced?4:tmpSuit; break;
+      case 27:
+      case 28:
+      case 29:  finalNum=5;
+                tmpSuit=4;                  break;
+      case 30:
+      case 31:
+      case 32:  finalNum=6;
+                tmpSuit=4;                  break;
+      case 33:  finalNum=7;
+                tmpSuit=4;
+      default:  break;
+    }
+
+    finalSuit = tmpSuit;
 }
+
 
   /*********************************************************************
   * getFinalSuit() *****************************************************

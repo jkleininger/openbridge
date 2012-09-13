@@ -120,7 +120,7 @@ public class Hand {
   *********************************************************************/
   public void removeCard(OpenBridgeGUI g, int spot) {
     carda.remove(spot);
-    g.moveComputerCards(spot, numCrds, this.position);
+    g.moveComputerCards(spot, carda.size(), this.position);
 	}
 
 	/**********************************************************************
@@ -223,11 +223,9 @@ public class Hand {
 	 * correct position in the center of the screen ***********************
 	 **********************************************************************/
 	public void playCard(OpenBridgeGUI g, int num) {
-
 	    carda.get(num).flipCard(g, num);
 	    removeCard(g, num);
 	    g.playComputer(this.position, carda.size());
-
 	}
 
 
