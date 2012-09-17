@@ -21,7 +21,7 @@ public class Contract {
 
   /**************
   * Constructor *
-  ***************/
+  **************/
 	public Contract() {
     Winner    = "None";
     condition = "None";
@@ -30,11 +30,11 @@ public class Contract {
     cFinal    = false;
   }
 
-	/**********************************************************************
-  * setContract()                                                       *
-  *                                                                     *
-  * Sets the values of the contract to the values supplied              *
-	**********************************************************************/
+	/***********************************************************************
+  * setContract()                                                        *
+  *                                                                      *
+  * Sets the values of the contract to the values supplied               *
+	***********************************************************************/
 	public void setContract(String w, int t, int suit, String c) {
     this.Winner    = w;
 	  this.condition = c;
@@ -43,11 +43,11 @@ public class Contract {
     this.cFinal    = true;
 	}
 
-	/**********************************************************************
-  * getWinner()                                                         *
-  *                                                                     *
-  * Returns the position of the final person to bid as a String         *
-  **********************************************************************/
+	/***********************************************************************
+  * getWinner()                                                          *
+  *                                                                      *
+  * Returns the position of the final person to bid as a String          *
+  ***********************************************************************/
   String getWinner()     { return this.Winner;    }
 
   /***********************************************************************

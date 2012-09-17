@@ -17,7 +17,13 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        last_bidder;
 
 	private static int FRAME_W    = 480;
-	private static int FRAME_H    = 320;
+	private static int FRAME_H    = 240;
+
+  private JPanel     bidButtonPanel;
+  private JPanel     bidListPanel;
+
+  private JList      bidList;
+  private DefaultListModel bidListModel;
 
   private JButton    XButton;
   private JButton    XXButton;
@@ -47,6 +53,15 @@ public class BidFrame extends javax.swing.JPanel {
     suitIcon[2] = getIcon("s2.gif");
     suitIcon[3] = getIcon("s3.gif");
 
+    bidButtonPanel = new JPanel();
+    bidListPanel = new JPanel();
+
+    bidButtonPanel.setLayout(new GridLayout(8,5));
+    bidListPanel.setLayout(new FlowLayout());
+
+    bidButtonPanel.setPreferredSize(new Dimension(FRAME_W-100, FRAME_H));
+    bidListPanel.setPreferredSize(new Dimension(100, FRAME_H));
+
     for(int rank=0;rank<7;rank++) {
       for(int suit=0;suit<5;suit++) {
         JButton thisButton;
@@ -62,6 +77,9 @@ public class BidFrame extends javax.swing.JPanel {
         bidButton.add(thisButton);
       }
     }
+
+    bidListModel = new DefaultListModel();
+    bidList    = new JList(bidListModel);
 
     XButton    = new JButton("X");
     XXButton   = new JButton("XX");
@@ -79,15 +97,19 @@ public class BidFrame extends javax.swing.JPanel {
       public void actionPerformed(ActionEvent e) { doPass(e); }
     });
 
-    this.setLayout(new GridLayout(8,5));
+    this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-    for(JButton b : bidButton) this.add(b);
+    for(JButton b : bidButton) bidButtonPanel.add(b);
+    bidButtonPanel.add( Box.createHorizontalGlue() );
+    bidButtonPanel.add(XButton);
+    bidButtonPanel.add(XXButton);
+    bidButtonPanel.add(passButton);
+    bidButtonPanel.add( Box.createHorizontalGlue() );
 
-    this.add( Box.createHorizontalGlue() );
-    this.add(XButton);
-    this.add(XXButton);
-    this.add(passButton);
-    this.add( Box.createHorizontalGlue() );
+    bidListPanel.add(bidList);
+
+    this.add(bidButtonPanel);
+    this.add(bidListPanel);
 
   }
 
@@ -108,9 +130,9 @@ public class BidFrame extends javax.swing.JPanel {
         curr_conditions = "None";
 
         if(curr_suit == 4) {
-          // player bid NT
+          displayBid(this.Current,curr_value,curr_suit,curr_conditions);
         } else {
-          //player bid trump
+          displayBid(this.Current,curr_value,curr_suit,curr_conditions);
         }
 
         numPass = 0;
@@ -128,26 +150,24 @@ public class BidFrame extends javax.swing.JPanel {
   }
 
   private void disableThrough(int btnNum) {
-    //System.out.println("Disabling through: " + btnNum);
     int curBtn = 0;
     for(;curBtn<=btnNum;curBtn++) {
       bidButton.get(curBtn).setEnabled(false);
     }
-    String theText = bidButton.get(curBtn).getText();
+    String theText = bidButton.get(btnNum).getText();
     theText = Current.getPosition().substring(0,1) + " " + theText;
-    bidButton.get(curBtn).setText(theText);
+    bidButton.get(btnNum).setText(theText);
   }
 
   private void disableThrough(int rank, int suit) {
-    System.out.println("("+rank+","+suit+") -> " + (((rank-1)*5)+suit));
     disableThrough(((rank-1)*5)+suit);
   }
 
   /*********************************************************************
-  * runBid() ***********************************************************
+  * runBid()                                                           *
   **********************************************************************
-  * Decides what the computer players will bid based on the ************
-  * information calculated from the Bid class **************************
+  * Decides what the computer players will bid based on the            *
+  * information calculated from the Bid class                          *
   *********************************************************************/
   public void runBid() {
     int tmpSuit = -1;
@@ -159,60 +179,48 @@ public class BidFrame extends javax.swing.JPanel {
 
       if(!isContract()) {
         if(tmpValue > curr_value) {
-          if(curr_conditions == "DBL" && tmpSuit == curr_suit && clear2double()) {
+
+          if(curr_conditions.equals("DBL") && tmpSuit == curr_suit && clear2double()) {
             curr_conditions = "RDBL";
-            numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
-            computerBid();
           } else if(tmpSuit > curr_suit) {
             if(curr_value == 0) curr_value = 1;
-            curr_suit = tmpSuit;
             curr_conditions = "None";
-            numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
-            computerBid();
           } else {
-            curr_suit = tmpSuit;
             curr_value += 1;
             curr_conditions = "None";
-            numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
-            computerBid();
           }
+          curr_suit = tmpSuit;
+          numPass = 0;
+          last_bidder=Current.getPosition().equals("NORTH")?0:1;
+          computerBid();
+
         } else if (curr_value != 0 && tmpSuit == curr_suit && tmpValue == curr_value) {
-          if(curr_conditions == "None" && clear2double()) {
-            curr_conditions = "DBL";
-            numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
-            computerBid();
-          } else if(curr_conditions == "DBL" && clear2double()) {
-            curr_conditions = "RDBL";
-            numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
+
+          if(clear2double()) {
+            curr_conditions=curr_conditions.equals("None")?"DBL":(curr_conditions.equals("DBL")?"RDBL":"None");
+            numPass=0;
+            last_bidder=Current.getPosition().equals("NORTH")?0:1;
             computerBid();
           } else {
-            ++numPass;
+            numPass++;
             computerPass();
           }
+
         } else if(tmpValue == curr_value && curr_value != 0) {
+
           if(tmpSuit > curr_suit) {
             curr_conditions = "None";
             curr_suit = tmpSuit;
             numPass = 0;
-            if(Current.getPosition() == "NORTH") last_bidder = 0;
-            else last_bidder = 1;
+            last_bidder=Current.getPosition().equals("NORTH")?0:1;
             computerBid();
           } else {
-            ++numPass;
+            numPass++;
             computerPass();
           }
+
         } else {
-          ++numPass;
+          numPass++;
           computerPass();
         }
 
@@ -252,6 +260,7 @@ public class BidFrame extends javax.swing.JPanel {
 
   private void doPass(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
+      displayBid(this.Current,-1,-1,curr_conditions);
       numPass++;
       acceptCheck();
       this.Current = this.Current.getLeft();
@@ -271,19 +280,21 @@ public class BidFrame extends javax.swing.JPanel {
 
 	private void computerBid() {
     if(!curr_conditions.equals("None")) {
-      System.out.println(curr_conditions);
-      //double, redouble, pass
+      displayBid(this.Current,-1,-1,curr_conditions);
+      //double, redouble
     } else {
       if(curr_suit == 4) {
         //computer bid NT
       } else {
         //computer bid trump
       }
+      displayBid(this.Current,curr_value,curr_suit,curr_conditions);
       disableThrough(curr_value,curr_suit);
     }
   }
 
   private void computerPass() {
+    displayBid(this.Current,-1,-1,curr_conditions);
   }
 
   private void acceptCheck() {
@@ -293,6 +304,17 @@ public class BidFrame extends javax.swing.JPanel {
       if(curr_conditions == "DBL") this.Current = this.Current.getLeft();
       tmpContract.setContract(Current.getPosition(), curr_value, curr_suit, curr_conditions);
     }
+  }
+
+  private void displayBid(Hand player, int rank, int suit, String condition) {
+    String theString = new String();
+    if(rank>-1 && suit>-1) {
+      theString = (player.getPosition() + ": " + curr_value + " " + curr_suit);
+    } else {
+      theString = (player.getPosition() + ": " + condition);
+    }
+    //System.out.println(theString);
+    bidListModel.addElement(theString);
   }
 
 
