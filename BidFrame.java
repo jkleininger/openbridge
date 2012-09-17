@@ -16,8 +16,8 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        numPass;
 	private int        last_bidder;
 
-	private static int FRAME_W    = 420;
-	private static int FRAME_H    = 240;
+	private static int FRAME_W    = 480;
+	private static int FRAME_H    = 320;
 
   private JButton    XButton;
   private JButton    XXButton;
@@ -89,7 +89,6 @@ public class BidFrame extends javax.swing.JPanel {
     this.add(passButton);
     this.add( Box.createHorizontalGlue() );
 
-
   }
 
   private ImageIcon getIcon(String fName) {
@@ -107,13 +106,12 @@ public class BidFrame extends javax.swing.JPanel {
         curr_suit = suit;
         curr_value = rank;
         curr_conditions = "None";
+
         if(curr_suit == 4) {
-          //Grid[row][col].setText(" " + Integer.toString(curr_value) + " NT") ;
+          // player bid NT
         } else {
-          //Grid[row][col].setText(" " + Integer.toString(curr_value));
-          //Grid[row][col].setIcon(new ImageIcon(getClass().getResource("/openbridge/cards/s"+curr_suit+".gif")));
+          //player bid trump
         }
-        //Grid[row][col].setHorizontalTextPosition(JLabel.LEFT);
 
         numPass = 0;
         last_bidder = 0;
@@ -130,13 +128,19 @@ public class BidFrame extends javax.swing.JPanel {
   }
 
   private void disableThrough(int btnNum) {
-    for(int curBtn = 0;curBtn<=btnNum;curBtn++) {
+    //System.out.println("Disabling through: " + btnNum);
+    int curBtn = 0;
+    for(;curBtn<=btnNum;curBtn++) {
       bidButton.get(curBtn).setEnabled(false);
     }
+    String theText = bidButton.get(curBtn).getText();
+    theText = Current.getPosition().substring(0,1) + " " + theText;
+    bidButton.get(curBtn).setText(theText);
   }
 
   private void disableThrough(int rank, int suit) {
-    disableThrough((int)(rank/5)+suit);
+    System.out.println("("+rank+","+suit+") -> " + (((rank-1)*5)+suit));
+    disableThrough(((rank-1)*5)+suit);
   }
 
   /*********************************************************************
@@ -267,17 +271,16 @@ public class BidFrame extends javax.swing.JPanel {
 
 	private void computerBid() {
     if(!curr_conditions.equals("None")) {
-      //Grid[row][col].setText(" " + curr_conditions);
+      System.out.println(curr_conditions);
+      //double, redouble, pass
     } else {
       if(curr_suit == 4) {
-        //Grid[row][col].setText(" " + Integer.toString(curr_value) + " NT") ;
+        //computer bid NT
       } else {
-        //Grid[row][col].setText(" " + Integer.toString(curr_value));
-        //Grid[row][col].setIcon(new ImageIcon(getClass().getResource("/openbridge/cards/s"+curr_suit+".gif")));
+        //computer bid trump
       }
-      //Grid[row][col].setHorizontalTextPosition(JLabel.LEFT);
+      disableThrough(curr_value,curr_suit);
     }
-    disableThrough(curr_value,curr_suit);
   }
 
   private void computerPass() {
