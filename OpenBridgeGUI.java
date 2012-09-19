@@ -1,10 +1,10 @@
-/******************************************************************************
- *************************** OpenBridgeGUI.java *******************************
- * @author Scott DiTomaso *****************************************************
- * Kettering University *******************************************************
- ******************************************************************************
- * Created on December 8, 2009 ************************************************
- ******************************************************************************/
+/*****************************************************************************
+* OpenBridgeGUI.java                                                         *
+*                                                                            *
+* Initial code by Scott DiTomaso, 2009 - 2010                                *
+* Kettering University                                                       *
+* Additional work by Jason K Leininger,  2012                                *
+*****************************************************************************/
 
 package openbridge;
 
@@ -154,7 +154,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 	    /** Create the layout for the Game and Score areas */
 	    SetupGamePanel();
 	    SetupSidePanel();
-  
+
 	    MainPanel.add(GamePanel, BorderLayout.CENTER);
 	    MainPanel.add(SidePanel, BorderLayout.EAST);
 
@@ -413,7 +413,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 		    }
 		});
 		North.add(image[0][x]);
-	    }			
+	    }
 	    else if(pos == "SOUTH") {
 		++sNum;
 		image[1][z] = new JLabel(new ImageIcon(getClass().getResource(thumbnail)));
@@ -465,7 +465,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 
 	    int position = -1;
 
-	    if(Pos == "NORTH") 
+	    if(Pos == "NORTH")
 		position = 0;
 	    else if(Pos == "WEST")
 		position = 2;
@@ -718,7 +718,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 	public void ShowContract(Contract c) {
 	    String string = null;
 
-	    if(c.getWinner() == "NORTH") 
+	    if(c.getWinner() == "NORTH")
 		string = "North/South";
 	    else if (c.getWinner() == "SOUTH")
 		string = "South/North";
@@ -726,7 +726,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 		string = "West/East";
 	    else if (c.getWinner() == "EAST")
 		string = "East/West";
-	    
+
 	    string = string + " - " + c.getTricks();
 
 	    if(c.getTrump() == 4)
@@ -741,7 +741,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 
 	public int getLastPlayed() {
 
-	    this.wait = true;	
+	    this.wait = true;
 	    return this.lastPlayed;
 	}
 
@@ -941,7 +941,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 	    tmpR.setBounds(0,(theyBelowLine - 10),95,5);
 	    ScorePanelLeft.add(tmpL);
 	    ScorePanelRight.add(tmpR);
-	
+
 	}
 
 	public void gameTotal(int nsNum, int weNum) {

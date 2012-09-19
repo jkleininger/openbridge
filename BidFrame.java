@@ -1,3 +1,11 @@
+/*****************************************************************************
+* BidFrame.java                                                              *
+*                                                                            *
+* Jason K Leininger, 2012                                                    *
+* Kettering University                                                       *
+* Based on code by Scott DiTomaso, 2009 - 2010                               *
+*****************************************************************************/
+
 package openbridge;
 
 import java.awt.*;
@@ -15,6 +23,8 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        curr_suit;
 	private int        numPass;
 	private int        last_bidder;
+
+  private char[]     cSuit = {'C','H','D','S'};
 
 	private static int FRAME_W    = 480;
 	private static int FRAME_H    = 240;
@@ -46,6 +56,11 @@ public class BidFrame extends javax.swing.JPanel {
     runBid();
   }
 
+  /*********************************************************************
+  * initComponents()                                                   *
+  *                                                                    *
+  * Set up GUI components for bid frame.                               *
+  *********************************************************************/
   private void initComponents() {
 
     suitIcon[0] = getIcon("s0.gif");
@@ -113,10 +128,20 @@ public class BidFrame extends javax.swing.JPanel {
 
   }
 
+  /*********************************************************************
+  * getIcon()                                                          *
+  *                                                                    *
+  * Returns image data from storage                                    *
+  *********************************************************************/
   private ImageIcon getIcon(String fName) {
     return (new ImageIcon(getClass().getResource("/openbridge/cards/"+fName)));
   }
 
+  /*********************************************************************
+  * bidAction()                                                        *
+  *                                                                    *
+  * Triggered when player clicks a bid button                          *
+  *********************************************************************/
   private void bidAction(ActionEvent e) {
     if(this.Current.isplayer()) {
       int unParsed = Integer.parseInt(e.getActionCommand());
@@ -130,10 +155,11 @@ public class BidFrame extends javax.swing.JPanel {
         curr_conditions = "None";
 
         if(curr_suit == 4) {
-          displayBid(this.Current,curr_value,curr_suit,curr_conditions);
+          //player bid NT
         } else {
-          displayBid(this.Current,curr_value,curr_suit,curr_conditions);
+          //player bid suit
         }
+        displayBid(this.Current,curr_value,curr_suit,curr_conditions);
 
         numPass = 0;
         last_bidder = 0;
@@ -141,14 +167,23 @@ public class BidFrame extends javax.swing.JPanel {
         runBid();
       }
     }
-
-
   }
 
+  /*********************************************************************
+  * bidValue()                                                         *
+  *                                                                    *
+  * Translates rank and suit into linear value for array reference     *
+  *********************************************************************/
   int bidValue(int rank, int suit) {
     return((rank*5)+suit);
   }
 
+  /*********************************************************************
+  * disableThrough()                                                   *
+  *                                                                    *
+  * Disables bid buttons when they are no longer legal bids.  Accepts  *
+  * linear or matrix indices.                                          *
+  *********************************************************************/
   private void disableThrough(int btnNum) {
     int curBtn = 0;
     for(;curBtn<=btnNum;curBtn++) {
@@ -165,7 +200,7 @@ public class BidFrame extends javax.swing.JPanel {
 
   /*********************************************************************
   * runBid()                                                           *
-  **********************************************************************
+  *                                                                    *
   * Decides what the computer players will bid based on the            *
   * information calculated from the Bid class                          *
   *********************************************************************/
@@ -234,6 +269,11 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * doDouble()                                                         *
+  *                                                                    *
+  * Doubles current bid                                                *
+  *********************************************************************/
   private void doDouble(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
       if((curr_conditions == "None") && (curr_value > 0)) {
@@ -246,6 +286,11 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * doRedouble()                                                       *
+  *                                                                    *
+  * Redoubles current bid                                              *
+  *********************************************************************/
   private void doRedouble(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
       if(curr_conditions.equals("DBL")) {
@@ -258,6 +303,11 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * doPass()                                                           *
+  *                                                                    *
+  * Passes                                                             *
+  *********************************************************************/
   private void doPass(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
       displayBid(this.Current,-1,-1,curr_conditions);
@@ -268,16 +318,31 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * isContract()                                                       *
+  *                                                                    *
+  * Verifies whether a contract has been completed                     *
+  *********************************************************************/
   public boolean isContract() {
     if (tmpContract.getWinner().equals("None")) return false;
     else return true;
   }
 
+  /*********************************************************************
+  * clear2double()                                                     *
+  *                                                                    *
+  * Verifies whether it is currently legal to double                   *
+  *********************************************************************/
   private boolean clear2double() {
     return ( (Current.getPosition() == "NORTH" && last_bidder == 1) ||
              ((Current.getPosition() == "EAST" || Current.getPosition() == "WEST") && last_bidder == 0));
   }
 
+  /*********************************************************************
+  * computerBid()                                                      *
+  *                                                                    *
+  * Perform bid by computer                                            *
+  *********************************************************************/
 	private void computerBid() {
     if(!curr_conditions.equals("None")) {
       displayBid(this.Current,-1,-1,curr_conditions);
@@ -293,10 +358,20 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * computerPass()                                                     *
+  *                                                                    *
+  * Perform pass by computer                                           *
+  *********************************************************************/
   private void computerPass() {
     displayBid(this.Current,-1,-1,curr_conditions);
   }
 
+  /*********************************************************************
+  * acceptCheck()                                                      *
+  *                                                                    *
+  * Check for contract completion conditions                           *
+  *********************************************************************/
   private void acceptCheck() {
     if(curr_value == 0 && numPass == 4) tmpContract.setContract("PASS", -1, -1, "None");
     else if(numPass == 3 && curr_value != 0) {
@@ -306,12 +381,19 @@ public class BidFrame extends javax.swing.JPanel {
     }
   }
 
+  /*********************************************************************
+  * displayBid()                                                       *
+  *                                                                    *
+  * Log bid to display (right-hand pane)                               *
+  *********************************************************************/
   private void displayBid(Hand player, int rank, int suit, String condition) {
     String theString = new String();
+
     if(rank>-1 && suit>-1) {
-      theString = (player.getPosition() + ": " + curr_value + " " + curr_suit);
+      theString = (player.getPosition() + ": " + curr_value + "" + cSuit[curr_suit]);
     } else {
-      theString = (player.getPosition() + ": " + condition);
+      if(condition.equals("None")) theString = (player.getPosition() + ": Pass");
+      else theString = (player.getPosition() + ": " + condition);
     }
     //System.out.println(theString);
     bidListModel.addElement(theString);

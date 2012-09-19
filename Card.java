@@ -1,3 +1,11 @@
+/*****************************************************************************
+* Card.java                                                                  *
+*                                                                            *
+* Initial code by Scott DiTomaso, 2009 - 2010                                *
+* Kettering University                                                       *
+* Additional work by Jason K Leininger,  2012                                *
+*****************************************************************************/
+
 package openbridge;
 
 import javax.swing.JLabel;
@@ -27,11 +35,21 @@ public class Card {
     this.pos       = null;
   }
 
+  /*********************************************************************
+  * getX()                                                             *
+  *                                                                    *
+  * Return various class values                                        *
+  *********************************************************************/
   public String getSuit()      { return sSuit[this.suit]; }
   public int    getNumSuit()   { return this.suit;        }
   public int    getValue()     { return this.value;       }
   public int    getSortValue() { return((13*suit)+value); }
 
+  /*********************************************************************
+  * display()                                                          *
+  *                                                                    *
+  * Display card graphic to g                                          *
+  *********************************************************************/
   public void display(boolean isVisible, OpenBridgeGUI g, String pos, int x) {
     this.pos = pos;
     if(isVisible) {
@@ -41,6 +59,11 @@ public class Card {
     }
   }
 
+  /*********************************************************************
+  * flipCard()                                                         *
+  *                                                                    *
+  * Alternate card orientation                                         *
+  *********************************************************************/
   public void flipCard(OpenBridgeGUI g, int x) {
     g.flip(this.face, this.pos, x);
   }

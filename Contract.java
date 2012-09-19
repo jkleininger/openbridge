@@ -1,27 +1,21 @@
-/*********************************************************************
-* Contract.java                                                      *
-* @author Scott DiTomaso                                             *
-* Kettering University                                               *
-*                                                                    *
-* Created on January 02, 2010                                        *
-*********************************************************************/
+/*****************************************************************************
+* Contract.java                                                              *
+*                                                                            *
+* Initial code by Scott DiTomaso, 2009 - 2010                                *
+* Kettering University                                                       *
+* Additional work by Jason K Leininger,  2012                                *
+*****************************************************************************/
 
 package openbridge;
 
 public class Contract {
 
-/************************
-* Private class members *
-************************/
 	private volatile String  Winner;
 	private String           condition;
 	private int              tricks;
 	private int              trump;
   private boolean          cFinal;
 
-  /**************
-  * Constructor *
-  **************/
 	public Contract() {
     Winner    = "None";
     condition = "None";

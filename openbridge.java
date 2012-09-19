@@ -1,9 +1,9 @@
 /*****************************************************************************
 * openbridge.java                                                            *
 *                                                                            *
-* Initial code by Scott DiTomaso, 20 December 2009                           *
+* Initial code by Scott DiTomaso, 2009 - 2010                                *
 * Kettering University                                                       *
-* Additional work by Jason K Leininger 2012                                  *
+* Additional work by Jason K Leininger,  2012                                *
 *****************************************************************************/
 
 package openbridge;

@@ -1,306 +1,284 @@
+/*****************************************************************************
+* WorkerThread.java                                                          *
+*                                                                            *
+* Initial code by Scott DiTomaso, 2009 - 2010                                *
+* Kettering University                                                       *
+* Additional work by Jason K Leininger,  2012                                *
+*****************************************************************************/
+
 package openbridge;
 
-/**********************
- * WorkerThread class *
- **********************/
 class WorkerThread implements Runnable {
 
-    /*************************
-     * Private class members *
-     *************************/
-	private Contract contract;
-	private BidFrame BidFrame;
-	private OpenBridgeGUI window;
-	private Hand dealer;
-	private Hand declarer;
-	private Hand dummy;
-	private Card[] curr_hand = new Card[4];
-	private boolean[][] alreadyPlayed = new boolean[4][13];
-	private volatile boolean stop_var;
-	private int nsTricks;
-	private int weTricks;
-	private int nsScore;
-	private int weScore;
-	private int nsAboveLine;
-	private int weAboveLine;
-	private int nsGames;
-	private int weGames;
-	private int vulnerable;
+  /************************
+  * Private class members *
+  ************************/
+  private Contract         contract;
+  private BidFrame         BidFrame;
+  private OpenBridgeGUI    window;
+  private Hand             dealer;
+  private Hand             declarer;
+  private Hand             dummy;
+  private Card[]           curr_hand = new Card[4];
+  private boolean[][]      alreadyPlayed = new boolean[4][13];
+  private volatile boolean stop_var;
+  private int              nsTricks;
+  private int              weTricks;
+  private int              nsScore;
+  private int              weScore;
+  private int              nsAboveLine;
+  private int              weAboveLine;
+  private int              nsGames;
+  private int              weGames;
+  private int              vulnerable;
 
-    /***************
-     * Constructor *
-     ***************/
+  /**************
+  * Constructor *
+  **************/
 	public WorkerThread(OpenBridgeGUI w, Hand d) {
-	    this.window = w;
-	    this.dealer = d;
-	    this.nsTricks = 0;
-	    this.weTricks = 0;
-	    this.nsScore = 0;
-	    this.weScore = 0;
-	    this.nsAboveLine = 0;
-	    this.weAboveLine = 0;
-	    this.nsGames = 0;
-	    this.weGames = 0;
-	    this.vulnerable = 0x0000;
-	    this.stop_var = false;
-
-	    clearAlreadyPlayed();
-	}
+    this.window      = w;
+    this.dealer      = d;
+    this.nsTricks    = 0;
+    this.weTricks    = 0;
+    this.nsScore     = 0;
+    this.weScore     = 0;
+    this.nsAboveLine = 0;
+    this.weAboveLine = 0;
+    this.nsGames     = 0;
+    this.weGames     = 0;
+    this.vulnerable  = 0x0000;
+    this.stop_var    = false;
+    clearAlreadyPlayed();
+  }
 
     /*************************
      * Private class methods *
      *************************/
 
-	/**********************************************************************
-	 * computerDeclarer() *************************************************
-	 **********************************************************************
-	 * Determines the order of play if either of the computer players won *
-	 * the bid or the previous hand ***************************************
-	 **********************************************************************/
-	private void computerDeclarer(String position) {
-	    int hand_suit = -1;
+  /**********************************************************************
+  * computerDeclarer() *************************************************
+  **********************************************************************
+  * Determines the order of play if either of the computer players won *
+  * the bid or the previous hand ***************************************
+  **********************************************************************/
+  private void computerDeclarer(String position) {
+    int hand_suit = -1;
 
-	    if(position.equals("WEST")) {
-		curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		hand_suit = curr_hand[1].getNumSuit();
+    if(position.equals("WEST")) {
+      curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      hand_suit = curr_hand[1].getNumSuit();
+      declarer = declarer.getLeft();
 
-		declarer = declarer.getLeft();
-		if(dummy.getPosition().equals("NORTH")) {
-		    declarer.unlock(window, hand_suit);
+      if(dummy.getPosition().equals("NORTH")) {
+        declarer.unlock(window, hand_suit);
+        while(window.isReady()) { zzz(0); }
+        curr_hand[2] = declarer.getCard(window.getLastPlayed());
+        declarer.blankCard(window.getLastPlayed());
+      } else {
+        zzz(600);
+        curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      }
 
-		    while(window.isReady()) { zzz(0); }
+      zzz(600);
+      declarer = declarer.getLeft();
+      curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      declarer = declarer.getLeft();
 
-		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
-		    declarer.blankCard(window.getLastPlayed());
-		} else {
-          //zzz(600);
-		    curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		}
+      if(dummy.getPosition().equals("SOUTH")) {
+        zzz(600);
+        curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      } else {
+        declarer.unlock(window, hand_suit);
+        while(window.isReady()) { zzz(0); }
+        curr_hand[0] = declarer.getCard(window.getLastPlayed());
+        declarer.blankCard(window.getLastPlayed());
+      }
 
-          //zzz(600);
+      declarer = declarer.getLeft();
 
-		declarer = declarer.getLeft();
-		curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    } else if(position.equals("EAST")) {
+      curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      hand_suit = curr_hand[3].getNumSuit();
+      declarer = declarer.getLeft();
 
-		declarer = declarer.getLeft();
-		if(dummy.getPosition().equals("SOUTH")) {
-          //zzz(600);
+      if(dummy.getPosition().equals("SOUTH")) {
+        zzz(600);
+        curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      } else {
+        declarer.unlock(window, hand_suit);
+        while(window.isReady()) { zzz(0); }
+        curr_hand[0] = declarer.getCard(window.getLastPlayed());
+        declarer.blankCard(window.getLastPlayed());
+      }
 
-		    curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		} else {
-		    declarer.unlock(window, hand_suit);
+      zzz(600);
 
-		    while(window.isReady()) { zzz(0); }
+      declarer = declarer.getLeft();
+      curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
-		    curr_hand[0] = declarer.getCard(window.getLastPlayed());
-		    declarer.blankCard(window.getLastPlayed());
-		}
+      declarer = declarer.getLeft();
 
-		declarer = declarer.getLeft();
+      if(dummy.getPosition().equals("NORTH")) {
+        declarer.unlock(window, hand_suit);
+        while(window.isReady()) { zzz(0); }
+        curr_hand[2] = declarer.getCard(window.getLastPlayed());
+        declarer.blankCard(window.getLastPlayed());
+      } else {
+        zzz(600);
+        curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+      }
 
-	    } else if(position.equals("EAST")) {
-		curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		hand_suit = curr_hand[3].getNumSuit();
-		declarer = declarer.getLeft();
-		if(dummy.getPosition().equals("SOUTH")) {
-			//zzz(600);
-			curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		} else {
-			declarer.unlock(window, hand_suit);
-			while(window.isReady()) { zzz(0); }
-			curr_hand[0] = declarer.getCard(window.getLastPlayed());
-			declarer.blankCard(window.getLastPlayed());
-		}
+      declarer = declarer.getLeft();
+    }
+  }
 
-          //zzz(600);
+  /**********************************************************************
+  * playerDeclarer() ***************************************************
+  **********************************************************************
+  * Determines the order of events if the player won the bidding or ****
+  * the previous hand **************************************************
+  **********************************************************************/
+  private void playerDeclarer() {
+    int hand_suit = -1;
 
-		declarer = declarer.getLeft();
-		curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    if(dummy.getPosition() == "SOUTH") {
+      curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    } else {
+      declarer.unlock(window, 4);
+      while(window.isReady()) { zzz(0); }
+      curr_hand[0] = declarer.getCard(window.getLastPlayed());
+      declarer.blankCard(window.getLastPlayed());
+    }
 
-		declarer = declarer.getLeft();
-		if(dummy.getPosition().equals("NORTH")) {
-		    declarer.unlock(window, hand_suit);
+    hand_suit = curr_hand[0].getNumSuit();
+    zzz(600);
+    declarer = declarer.getLeft();
+    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    declarer = declarer.getLeft();
 
-		    while(window.isReady()) { zzz(0); }
+    if(dummy.getPosition() == "NORTH") {
+      declarer.unlock(window, hand_suit);
+      while(window.isReady()) { zzz(0); }
+      curr_hand[2] = declarer.getCard(window.getLastPlayed());
+      declarer.blankCard(window.getLastPlayed());
+    } else {
+      zzz(600);
+      curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    }
 
-		    curr_hand[2] = declarer.getCard(window.getLastPlayed());
-		    declarer.blankCard(window.getLastPlayed());
-		} else {
-          //zzz(600);
+    zzz(600);
+    declarer = declarer.getLeft();
+    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    declarer = declarer.getLeft();
+  }
 
-		    curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-		}
+  /**********************************************************************
+  * partnerDeclarer() **************************************************
+  **********************************************************************
+  * Determines the order of events if the players partner won the bid **
+  * or the previous hand ***********************************************
+  **********************************************************************/
+  private void partnerDeclarer() {
+    int hand_suit = -1;
 
-		declarer = declarer.getLeft();
-	    }
-	}
+    if(dummy.getPosition() == "NORTH") {
+      declarer.unlock(window, 4);
+      while(window.isReady()) { zzz(0); }
+      curr_hand[2] = declarer.getCard(window.getLastPlayed());
+      declarer.blankCard(window.getLastPlayed());
+    } else {
+      curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    }
 
-	/**********************************************************************
-	 * playerDeclarer() ***************************************************
-	 **********************************************************************
-	 * Determines the order of events if the player won the bidding or ****
-	 * the previous hand **************************************************
-	 **********************************************************************/
-	private void playerDeclarer() {
-	    int hand_suit = -1;
+    hand_suit = curr_hand[2].getNumSuit();
+    zzz(600);
+    declarer = declarer.getLeft();
+    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    declarer = declarer.getLeft();
 
-	    if(dummy.getPosition() == "SOUTH") {
-		curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-	    } else {
-		declarer.unlock(window, 4);
+    if(dummy.getPosition() == "SOUTH") {
+      zzz(600);
+      curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
+    } else {
+      declarer.unlock(window, hand_suit);
+      while(window.isReady()) { zzz(0); }
+      curr_hand[0] = declarer.getCard(window.getLastPlayed());
+      declarer.blankCard(window.getLastPlayed());
+    }
 
-		while(window.isReady()) { zzz(0); }
+    zzz(600);
 
-		curr_hand[0] = declarer.getCard(window.getLastPlayed());
-		declarer.blankCard(window.getLastPlayed());
-	    }
-	    hand_suit = curr_hand[0].getNumSuit();
+    declarer = declarer.getLeft();
+    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
 
-          //zzz(600);
+    declarer = declarer.getLeft();
+  }
 
-	    declarer = declarer.getLeft();
-	    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-
-	    declarer = declarer.getLeft();
-	    if(dummy.getPosition() == "NORTH") {
-		declarer.unlock(window, hand_suit);
-
-		while(window.isReady()) { zzz(0); }
-
-		curr_hand[2] = declarer.getCard(window.getLastPlayed());
-		declarer.blankCard(window.getLastPlayed());
-	    } else {
-          //zzz(600);
-
-		curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-	    }
-
-          //zzz(600);
-
-	    declarer = declarer.getLeft();
-	    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-
-	    declarer = declarer.getLeft();
-	}
-
-	/**********************************************************************
-	 * partnerDeclarer() **************************************************
-	 **********************************************************************
-	 * Determines the order of events if the players partner won the bid **
-	 * or the previous hand ***********************************************
-	 **********************************************************************/
-	private void partnerDeclarer() {
-	    int hand_suit = -1;
-
-	    if(dummy.getPosition() == "NORTH") {
-		declarer.unlock(window, 4);
-
-		while(window.isReady()) { zzz(0); }
-
-		curr_hand[2] = declarer.getCard(window.getLastPlayed());
-		declarer.blankCard(window.getLastPlayed());
-	    } else {
-		curr_hand[2] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-	    }
-	    hand_suit = curr_hand[2].getNumSuit();
-
-          //zzz(600);
-
-	    declarer = declarer.getLeft();
-	    curr_hand[3] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-
-	    declarer = declarer.getLeft();
-	    if(dummy.getPosition() == "SOUTH") {
-          //zzz(600);
-
-		curr_hand[0] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-	    } else {
-		declarer.unlock(window, hand_suit);
-
-		while(window.isReady()) { zzz(0); }
-
-		curr_hand[0] = declarer.getCard(window.getLastPlayed());
-		declarer.blankCard(window.getLastPlayed());
-	    }
-
-          //zzz(600);
-
-	    declarer = declarer.getLeft();
-	    curr_hand[1] = declarer.computePlay(window, dummy, hand_suit, contract.getTrump(), curr_hand, alreadyPlayed);
-
-	    declarer = declarer.getLeft();
-	}
-
-	/**********************************************************************
-	 * findWinner() *******************************************************
-	 **********************************************************************
-	 * Determines who won the hand based on the suit and trump, also ******
-	 * the cards that were played are remembered by the computer players **
-	 **********************************************************************/
-	private void findWinner() {
-	    int start = -1;
-	    int pos = -1;
-	    int entered;
-	    int trump = contract.getTrump();
+  /**********************************************************************
+  * findWinner() *******************************************************
+  **********************************************************************
+  * Determines who won the hand based on the suit and trump, also ******
+  * the cards that were played are remembered by the computer players **
+  **********************************************************************/
+  private void findWinner() {
+    int start = -1;
+    int pos = -1;
+    int entered;
+    int trump = contract.getTrump();
 
 
-	    for(int i=0; i<4; ++i) {
-		alreadyPlayed[curr_hand[i].getNumSuit()][(14 - curr_hand[i].getValue())] = true;
-	    }
+    for(int i=0; i<4; ++i) {
+      alreadyPlayed[curr_hand[i].getNumSuit()][(14 - curr_hand[i].getValue())] = true;
+    }
 
 
-	    if(declarer.getPosition().equals("WEST"))
-		start = 1;
-	    else if(declarer.getPosition().equals("EAST"))
-		start = 3;
-	    else if(declarer.getPosition().equals("NORTH"))
-		start = 2;
-	    else
-		start = 0;
+    if(declarer.getPosition().equals("WEST"))       start = 1;
+    else if(declarer.getPosition().equals("EAST"))  start = 3;
+    else if(declarer.getPosition().equals("NORTH")) start = 2;
+    else                                            start = 0;
 
-	    entered = start;
+    entered = start;
 
-            for(pos=start+1;pos>3;pos-=4);
+    for(pos=start+1;pos>3;pos-=4);
 
-	    for(int j=0; j<3; ++j) {
-		if((curr_hand[pos].getNumSuit() == trump && curr_hand[start].getNumSuit() != trump) ||
-		   (curr_hand[pos].getNumSuit() == curr_hand[start].getNumSuit() && curr_hand[pos].getValue() > curr_hand[start].getValue())) {
-			start = pos;
-		}
-		pos=pos<3?pos++:0;
-	    }
+    for(int j=0; j<3; ++j) {
+      if((curr_hand[pos].getNumSuit() == trump && curr_hand[start].getNumSuit() != trump) ||
+        (curr_hand[pos].getNumSuit() == curr_hand[start].getNumSuit() && curr_hand[pos].getValue() > curr_hand[start].getValue())) {
+        start = pos;
+      }
+      pos=pos<3?pos++:0;
+    }
 
-	    if(start % 2 == 0) {
-		nsTricks++;
-		window.updateTricks(0, nsTricks);
-	    } else {
-		weTricks++;
-		window.updateTricks(1, weTricks);
-	    }
+    if(start % 2 == 0) {
+      nsTricks++;
+      window.updateTricks(0, nsTricks);
+    } else {
+      weTricks++;
+      window.updateTricks(1, weTricks);
+    }
 
-	    if(start < entered) {
-		for(int k=0; k < (4-(entered-start)); ++k) {
-		    declarer = declarer.getLeft();
-		}
-	    } else {
-		for(int k=0; k<(start-entered); ++k) {
-		    declarer = declarer.getLeft();
-		}
-	    }
-	}
+    if(start < entered) {
+      for(int k=0; k < (4-(entered-start)); ++k) {
+        declarer = declarer.getLeft();
+      }
+    } else {
+      for(int k=0; k<(start-entered); ++k) {
+        declarer = declarer.getLeft();
+      }
+    }
+  }
 
-	/**********************************************************************
-	 * clearAlreadyPlayed()************************************************
-	 **********************************************************************
-	 * Sets the values for all cards to false, indicating they have not ***
-	 * been played yet for this round *************************************
-	 **********************************************************************/
-	private void clearAlreadyPlayed() {
-
-	    for(int i=0; i<4; ++i)
-		for(int j=0; j<13; ++j)
-		    this.alreadyPlayed[i][j] = false;
-	}
+  /**********************************************************************
+  * clearAlreadyPlayed()************************************************
+  **********************************************************************
+  * Sets the values for all cards to false, indicating they have not ***
+  * been played yet for this round *************************************
+  **********************************************************************/
+  private void clearAlreadyPlayed() {
+    for(int i=0; i<4; ++i)
+      for(int j=0; j<13; ++j)
+        this.alreadyPlayed[i][j] = false;
+  }
 
 	/**********************************************************************
 	 * calculateScore() ***************************************************
