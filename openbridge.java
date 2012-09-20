@@ -29,7 +29,7 @@ public class openbridge extends Thread {
   }
 
   /*********************************************************************
-  * newGame() **********************************************************
+  * newGame()                                                          *
   * When a new game is called for, stop the currently running thread   *
   * if it exists and set up the window and players, then start the     *
   * thread to handle the gameplay                                      *

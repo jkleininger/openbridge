@@ -24,7 +24,7 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        numPass;
 	private int        last_bidder;
 
-  private char[]     cSuit = {'C','H','D','S'};
+  private char[]     cSuit = {'C','H','D','S','N'};
 
 	private static int FRAME_W    = 480;
 	private static int FRAME_H    = 240;
@@ -209,19 +209,23 @@ public class BidFrame extends javax.swing.JPanel {
     int tmpValue = -1;
 
     while(!this.Current.isplayer()) {
+      System.out.println("curr_value: " + curr_value);
       tmpSuit = this.Current.getMaxSuit();
       tmpValue = this.Current.getMaxValue();
 
       if(!isContract()) {
         if(tmpValue > curr_value) {
-
+          System.out.println("here!");
           if(curr_conditions.equals("DBL") && tmpSuit == curr_suit && clear2double()) {
+            System.out.println("if!");
             curr_conditions = "RDBL";
           } else if(tmpSuit > curr_suit) {
+            System.out.println("else if!");
             if(curr_value == 0) curr_value = 1;
             curr_conditions = "None";
           } else {
-            curr_value += 1;
+            System.out.println("else!");
+            curr_value++;
             curr_conditions = "None";
           }
           curr_suit = tmpSuit;
@@ -277,7 +281,10 @@ public class BidFrame extends javax.swing.JPanel {
   private void doDouble(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
       if((curr_conditions == "None") && (curr_value > 0)) {
+        XButton.setEnabled(false);
+        XXButton.setEnabled(true);
         curr_conditions = "DBL";
+        displayBid(this.Current,-1,-1,"Double");
         numPass = 0;
         last_bidder = 0;
         this.Current = this.Current.getLeft();
@@ -294,7 +301,9 @@ public class BidFrame extends javax.swing.JPanel {
   private void doRedouble(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
       if(curr_conditions.equals("DBL")) {
+        XXButton.setEnabled(false);
         curr_conditions = "RDBL";
+        displayBid(this.Current,-1,-1,"Redouble");
         numPass = 0;
         last_bidder = 0;
         this.Current = this.Current.getLeft();
@@ -310,7 +319,7 @@ public class BidFrame extends javax.swing.JPanel {
   *********************************************************************/
   private void doPass(ActionEvent e) {
     if(this.Current.isplayer() && !isContract()) {
-      displayBid(this.Current,-1,-1,curr_conditions);
+      displayBid(this.Current,-1,-1,"Pass");
       numPass++;
       acceptCheck();
       this.Current = this.Current.getLeft();
@@ -344,10 +353,16 @@ public class BidFrame extends javax.swing.JPanel {
   * Perform bid by computer                                            *
   *********************************************************************/
 	private void computerBid() {
-    if(!curr_conditions.equals("None")) {
-      displayBid(this.Current,-1,-1,curr_conditions);
-      //double, redouble
-    } else {
+    if(curr_conditions.equals("DBL")) {
+      XButton.setEnabled(false);
+      XXButton.setEnabled(true);
+      displayBid(this.Current,-1,-1,"Double");
+    }
+    else if(curr_conditions.equals("RDBL")) {
+      XXButton.setEnabled(false);
+      displayBid(this.Current,-1,-1,"Redouble");
+    }
+    else {
       if(curr_suit == 4) {
         //computer bid NT
       } else {
@@ -364,7 +379,7 @@ public class BidFrame extends javax.swing.JPanel {
   * Perform pass by computer                                           *
   *********************************************************************/
   private void computerPass() {
-    displayBid(this.Current,-1,-1,curr_conditions);
+    displayBid(this.Current,-1,-1,"Pass");
   }
 
   /*********************************************************************
@@ -376,7 +391,7 @@ public class BidFrame extends javax.swing.JPanel {
     if(curr_value == 0 && numPass == 4) tmpContract.setContract("PASS", -1, -1, "None");
     else if(numPass == 3 && curr_value != 0) {
       this.Current = this.Current.getLeft();
-      if(curr_conditions == "DBL") this.Current = this.Current.getLeft();
+      if(curr_conditions.equals("DBL")) this.Current = this.Current.getLeft();
       tmpContract.setContract(Current.getPosition(), curr_value, curr_suit, curr_conditions);
     }
   }
@@ -389,11 +404,10 @@ public class BidFrame extends javax.swing.JPanel {
   private void displayBid(Hand player, int rank, int suit, String condition) {
     String theString = new String();
 
-    if(rank>-1 && suit>-1) {
+    if(rank>-1 && suit>-1 && suit<5 ) {
       theString = (player.getPosition() + ": " + curr_value + "" + cSuit[curr_suit]);
     } else {
-      if(condition.equals("None")) theString = (player.getPosition() + ": Pass");
-      else theString = (player.getPosition() + ": " + condition);
+      theString = (player.getPosition() + ": " + condition);
     }
     //System.out.println(theString);
     bidListModel.addElement(theString);

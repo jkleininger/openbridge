@@ -10,9 +10,6 @@ package openbridge;
 
 class WorkerThread implements Runnable {
 
-  /************************
-  * Private class members *
-  ************************/
   private Contract         contract;
   private BidFrame         BidFrame;
   private OpenBridgeGUI    window;
@@ -32,9 +29,6 @@ class WorkerThread implements Runnable {
   private int              weGames;
   private int              vulnerable;
 
-  /**************
-  * Constructor *
-  **************/
 	public WorkerThread(OpenBridgeGUI w, Hand d) {
     this.window      = w;
     this.dealer      = d;
@@ -51,16 +45,12 @@ class WorkerThread implements Runnable {
     clearAlreadyPlayed();
   }
 
-    /*************************
-     * Private class methods *
-     *************************/
-
-  /**********************************************************************
+  /*********************************************************************
   * computerDeclarer() *************************************************
   **********************************************************************
   * Determines the order of play if either of the computer players won *
   * the bid or the previous hand ***************************************
-  **********************************************************************/
+  *********************************************************************/
   private void computerDeclarer(String position) {
     int hand_suit = -1;
 
@@ -268,173 +258,166 @@ class WorkerThread implements Runnable {
     }
   }
 
-  /**********************************************************************
-  * clearAlreadyPlayed()************************************************
-  **********************************************************************
-  * Sets the values for all cards to false, indicating they have not ***
-  * been played yet for this round *************************************
-  **********************************************************************/
+  /*********************************************************************
+  * clearAlreadyPlayed()                                               *
+  * Sets the values for all cards to false, indicating they have not   *
+  * been played yet during this round                                  *
+  *********************************************************************/
   private void clearAlreadyPlayed() {
     for(int i=0; i<4; ++i)
       for(int j=0; j<13; ++j)
         this.alreadyPlayed[i][j] = false;
   }
 
-	/**********************************************************************
-	 * calculateScore() ***************************************************
-	 **********************************************************************
-	 * Determines who gets what points at the end of the round based on ***
-	 * the contract and the number of tricks taken ************************
-	 **********************************************************************/
-	private void calculateScore() {
-	    int     tricks = 0;
-	    int     below = 0;
-	    int     above = 0;
-	    int     tmp = 0;
-	    int     multi = 1;
-	    int     redouble = 0;
-	    boolean vuln = false;
+  /*********************************************************************
+  * calculateScore()                                                   *
+  * Determines who gets what points at the end of the round based on   *
+  * the contract and the number of tricks taken                        *
+  *********************************************************************/
+  private void calculateScore() {
+    int     tricks = 0;
+    int     below = 0;
+    int     above = 0;
+    int     tmp = 0;
+    int     multi = 1;
+    int     redouble = 0;
+    boolean vuln = false;
 
-	    if(contract.getWinner() == "SOUTH" || contract.getWinner() == "NORTH") {
-          tricks = nsTricks;
-		  if((vulnerable & 0x0001) != 0) vuln = true;
-	    } else if(contract.getWinner() == "WEST" || contract.getWinner() == "EAST") {
-		  tricks = weTricks;
-		  if((vulnerable & 0x0002) != 0) vuln = true;
-	    }
+    if(contract.getWinner() == "SOUTH" || contract.getWinner() == "NORTH") {
+      tricks = nsTricks;
+      if((vulnerable & 0x0001) != 0) vuln = true;
+    } else if(contract.getWinner() == "WEST" || contract.getWinner() == "EAST") {
+      tricks = weTricks;
+      if((vulnerable & 0x0002) != 0) vuln = true;
+    }
 
-	    if(contract.getConditions() == "DBL") {
-          multi = 2;
-		  above = 50;
-	    } else if(contract.getConditions() == "RDBL") {
-		  redouble = 1;
-		  multi = 4;
-	    }
+    if(contract.getConditions().equals("DBL")) {
+      multi = 2;
+      above = 50;
+    } else if(contract.getConditions().equals("RDBL")) {
+      redouble = 1;
+      multi = 4;
+    }
 
 
-	    if((tricks - 6) >= contract.getTricks()) {
-		if(contract.getTrump() == 4) {
-		    tmp = 30;
-		    below = (40 + ((contract.getTricks() - 1) * 30)) * multi;
-		}
-		else if(contract.getTrump() == 0 || contract.getTrump() == 1) {
-		    tmp = 20;
-		    below = (contract.getTricks() * 20) * multi;
-		}
-		else if(contract.getTrump() == 2 || contract.getTrump() == 3) {
-		    tmp = 30;
-		    below = (contract.getTricks() * 30) * multi;
-		}
+    if((tricks - 6) >= contract.getTricks()) {
+      if(contract.getTrump() == 4) {
+        tmp = 30;
+        below = (40 + ((contract.getTricks() - 1) * 30)) * multi;
+      }
+      else if(contract.getTrump() == 0 || contract.getTrump() == 1) {
+        tmp = 20;
+        below = (contract.getTricks() * 20) * multi;
+      }
+      else if(contract.getTrump() == 2 || contract.getTrump() == 3) {
+        tmp = 30;
+        below = (contract.getTricks() * 30) * multi;
+      }
 
-		if(vuln) {
-		    if(contract.getConditions() == "DBL")
-			tmp = 200;
-		    else if(contract.getConditions() == "RDBL")
-			tmp = 400;
-		} else {
-		    if(contract.getConditions() == "DBL")
-			tmp = 100;
-		    else if(contract.getConditions() == "RDBL")
-			tmp = 200;
-		}
-		above += ((tricks - 6) - contract.getTricks()) * tmp;
+      if(vuln) {
+        if(contract.getConditions() == "DBL")       tmp = 200;
+        else if(contract.getConditions() == "RDBL") tmp = 400;
+      } else {
+        if(contract.getConditions() == "DBL")       tmp = 100;
+        else if(contract.getConditions() == "RDBL") tmp = 200;
+      }
+      above += ((tricks - 6) - contract.getTricks()) * tmp;
 
-	    } else {
-		if(vuln) {
-		    if(contract.getConditions() == "DBL" || contract.getConditions() == "RDBL") {
-			above = (200 + ((contract.getTricks() - (tricks -6) -1) * 300)) * (redouble * 2);
-		    } else {
-			above = (100 * (contract.getTricks() - (tricks - 6)));
-		    }
-		} else {
-		    if(contract.getConditions() == "DBL" || contract.getConditions() == "RDBL") {
-			if((contract.getTricks() - (tricks - 6)) > 3) {
-			    above = (500 + ((contract.getTricks() - (tricks - 6) - 3) * 300)) * (redouble * 2);
-			} else {
-			    above = (100 + ((contract.getTricks() - (tricks - 6) - 1) * 200)) * (redouble * 2);
-			}
-		    } else {
-			above = (50 * (contract.getTricks() - (tricks - 6)));
-		    }
-		}
-	    }
+      } else {
+        if(vuln) {
+          if(contract.getConditions() == "DBL" || contract.getConditions() == "RDBL") {
+            above = (200 + ((contract.getTricks() - (tricks -6) -1) * 300)) * (redouble * 2);
+          } else {
+            above = (100 * (contract.getTricks() - (tricks - 6)));
+          }
+        } else {
+          if(contract.getConditions() == "DBL" || contract.getConditions() == "RDBL") {
+            if((contract.getTricks() - (tricks - 6)) > 3) {
+              above = (500 + ((contract.getTricks() - (tricks - 6) - 3) * 300)) * (redouble * 2);
+            } else {
+              above = (100 + ((contract.getTricks() - (tricks - 6) - 1) * 200)) * (redouble * 2);
+            }
+          } else {
+            above = (50 * (contract.getTricks() - (tricks - 6)));
+          }
+        }
+      }
 
-	    if(contract.getWinner() == "SOUTH" || contract.getWinner() == "NORTH") {
-		if((tricks - 6) >= contract.getTricks()) {
-		    window.belowLine(0, below);
-		    window.aboveLine(0, above);
-		    nsAboveLine += above;
-		    nsAboveLine += below;
-		    nsScore += below;
+    if(contract.getWinner() == "SOUTH" || contract.getWinner() == "NORTH") {
+      if((tricks - 6) >= contract.getTricks()) {
+        window.belowLine(0, below);
+        window.aboveLine(0, above);
+        nsAboveLine += above;
+        nsAboveLine += below;
+        nsScore += below;
 
-		    if(contract.getTricks() == 7) {
-			if(vuln) {
-			    window.aboveLine(0, 1500);
-			    nsAboveLine += 1500;
-			} else {
-			    window.aboveLine(0, 1000);
-			    nsAboveLine += 1000;
-			}
-		    } else if(contract.getTricks() == 6) {
-			if(vuln) {
-			    window.aboveLine(0, 750);
-			    nsAboveLine += 750;
-			} else {
-			    window.aboveLine(0, 500);
-			    nsAboveLine += 500;
-			}
-		    }
-		} else {
-		    window.aboveLine(1, above);
-		    weAboveLine += above;
-		}
-	    } else if(contract.getWinner() == "WEST" || contract.getWinner() == "EAST") {
-		if((tricks - 6) >= contract.getTricks()) {
-		    window.belowLine(1, below);
-		    window.aboveLine(1, above);
-		    weAboveLine += above;
-		    weAboveLine += below;
-		    weScore += below;
+        if(contract.getTricks() == 7) {
+          if(vuln) {
+            window.aboveLine(0, 1500);
+            nsAboveLine += 1500;
+          } else {
+            window.aboveLine(0, 1000);
+            nsAboveLine += 1000;
+          }
+        } else if(contract.getTricks() == 6) {
+          if(vuln) {
+            window.aboveLine(0, 750);
+            nsAboveLine += 750;
+          } else {
+            window.aboveLine(0, 500);
+            nsAboveLine += 500;
+          }
+        }
+      } else {
+        window.aboveLine(1, above);
+        weAboveLine += above;
+      }
+    }
+    else if(contract.getWinner() == "WEST" || contract.getWinner() == "EAST") {
+      if((tricks - 6) >= contract.getTricks()) {
+        window.belowLine(1, below);
+        window.aboveLine(1, above);
+        weAboveLine += above;
+        weAboveLine += below;
+        weScore += below;
 
-		    if(contract.getTricks() == 7) {
-			if(vuln) {
-			    window.aboveLine(0, 1500);
-			    weAboveLine += 1500;
-			} else {
-			    window.aboveLine(0, 1000);
-			    weAboveLine += 1000;
-			}
-		    } else if(contract.getTricks() == 6) {
-			if(vuln) {
-			    window.aboveLine(0, 750);
-			    weAboveLine += 750;
-			} else {
-			    window.aboveLine(0, 500);
-			    weAboveLine += 500;
-			}
-		    }
-		} else {
-		    window.aboveLine(0, above);
-		    nsAboveLine += above;
-		}
-	    }
+        if(contract.getTricks() == 7) {
+          if(vuln) {
+            window.aboveLine(0, 1500);
+            weAboveLine += 1500;
+          } else {
+            window.aboveLine(0, 1000);
+            weAboveLine += 1000;
+          }
+        } else if(contract.getTricks() == 6) {
+          if(vuln) {
+            window.aboveLine(0, 750);
+            weAboveLine += 750;
+          } else {
+            window.aboveLine(0, 500);
+            weAboveLine += 500;
+          }
+        }
+      } else {
+        window.aboveLine(0, above);
+        nsAboveLine += above;
+      }
+    }
 
-            System.out.println("setting all trick counts to 0");
-	    nsTricks = 0;
-	    weTricks = 0;
-	    window.updateTricks(2, 0);
+    nsTricks = 0;
+    weTricks = 0;
+    window.updateTricks(2, 0);
 
-	    window.clearContract();
-	    window.removeDeclarer(contract.getWinner());
-	    window.removeDealer(dealer.getPosition());
-	}
+    window.clearContract();
+    window.removeDeclarer(contract.getWinner());
+    window.removeDealer(dealer.getPosition());
+  }
 
-/*********************************************************************
-* getRubberBonus() ***************************************************
-**********************************************************************
-* Determines the bonus to be applied for winning the rubber **********
-* depending on how many games were won by ****************************
-*********************************************************************/
+  /*********************************************************************
+  * getRubberBonus()                                                   *
+  * Determines the bonus to be applied for winning the rubber          *
+  * depending on how many games were won                               *
+  *********************************************************************/
   private void getRubberBonus(int pos) {
     if(pos == 0) {
       if(weGames == 0) {
@@ -456,25 +439,19 @@ class WorkerThread implements Runnable {
   }
 
 
-    /************************
-     * Public class methods *
-     ************************/
-
-	/**********************************************************************
-	 * stopThread() *******************************************************
-	 **********************************************************************
-	 * Changes the value of the volatile variable stop_var to close the ***
-	 * run method and stop the thread *************************************
-	 **********************************************************************/
+  /*********************************************************************
+  * stopThread()                                                       *
+  * Changes the value of the volatile variable stop_var to close the   *
+  * run method and stop the thread                                     *
+  *********************************************************************/
   public void stopThread() { stop_var = true; }
 
-	/**********************************************************************
-	 * run() **************************************************************
-	 **********************************************************************
-	 * Run is the part of the thread that plays the game.  Starting with **
-	 * the bidding, then each and played, calculating the score and *******
-	 * starting over again until there is a winner ************************
-	 **********************************************************************/
+  /*********************************************************************
+  * run()                                                              *
+  * Run is the part of the thread that plays the game.  Starting with  *
+  * the bidding, then each hand played, calculating the score and      *
+  * starting over again until there is a winner                        *
+  *********************************************************************/
   public void run() {
 
     while(nsGames <= 2 && weGames <= 2) {
