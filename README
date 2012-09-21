@@ -1,0 +1,62 @@
+*******************************************************************************
+*                                                                             *
+*                Enhancements, fixes, and other modifications                 *
+*                                                                             *
+*******************************************************************************
+
+There were a number of empty while() loops.  These were causing program execution to effectively halt.  This resulted in an unplayable game.  These were resolved by asking the thread to sleep for a time of 0 during each iteration.  At the same time, a new procedure named zzz() was added.  This is a convenience method, as Thread.sleep() is invoked at numerous points.
+
+A platform-dependent system call was replaced.
+
+Code now prefers ArrayList to Array in most situations.  This allows cleaner code and, since the array size is small, there should be little measureable difference in performance.  ArrayList facilitates cleaner code, especially in sorting and shuffling.  One notable exception is in the computer play routines -- this will be explained below.
+
+The WorkerThread class, previously located inside openbridge.java, has been moved to its own separate file, primarily to follow convention.
+
+The most visible change is a completely redesigned BidFrame --  this is the UI that appears during bidding.  The original was functional but wasn't as intuitive as it could have been.  The new design is more visual.  Each bid, pass, or double requires just one mouse click.  Previously, rank and suit were selected independently via slider controls before clicking the Bid button.  Now all possible bids are laid in an array of individual buttons.  Computer and player bids are visible in this array and in an accompanying list.
+
+There were many possible issues of String comparison.  The == comparator has been replaced by the String.equals() method throughout the package.  It is advisable to alter the code to avoid using strings as class properties when int or enum could be used with little impact in code readability.  Of particular interest is the availability of the switch() mechanic for int versus String -- it cannot be used with the latter, and this has resulted in some messy if() blocks.  Some of this has been alleviated (an int version of an existing NWSE get() method was introduced).
+
+Many minor changes were made throughout the code to enhance readability:
+
+Simple multi-line if() blcoks resulting in assignment of a single variable were often rewritten in ?: form.
+
+Indentation, previously a combination of spaces and tabs, has been homogenized to use only spaces.
+
+Stylistic preferences have also been largely normalized -- vertical alignment of declarations and successive assignments; simple getPropertyX() methods are now mostly single-line;
+
+
+*******************************************************************************
+*                                                                             *
+*                         Next steps / Recommendations                        *
+*                                                                             *
+*******************************************************************************
+
+* Modularize computer play code ***********************************************
+
+It is currently a large, deeply nested block of if()s.  While functional, it will be difficult to expand.  Instead, it is recommended to separate the computer process of elimination and card selection into modules, preferably multiple smaller methods, to facilitate later improvement to the logic.  For example, imagine a master selectComputerPlay() method that looks something like this:
+
+Card selectComputerPlay(...) {
+
+  if(notLeader) {
+    followSuit();  // eliminate non-suit cards if I have any in-suit
+    eliminateCardsByStrategyA();
+    eliminateCardsByStrategyB();
+    ... // code eliminating other non-optimal choices
+    return(remainingCard);
+  }
+  else {  // leader
+    selectASuit();
+    eliminateCardsByStrategyA();
+    eliminateCardsByStrategyB();
+    ...
+    return(remainingCard);
+  }
+
+}
+
+Then, each supporting method is a smaller piece of code.  It's easier to read and simple to expand.  It needn't be a process of eliminating undesirable choices paring down to a single card, of course.  The same philosophy can apply to focusing on looking for the best choice (this likely more closely mimics how a human would select a card).
+
+* Further GUI enhancement *****************************************************
+
+Though lower priority than backend functionality (computer strategy, in particular), the user interface will be an important piece of the project at some point.  It is currently functional, but a few key improvements should be made:  handle window resizing; handle smaller screen sizes; add cusomizable delays during computer play to give the game a more natural feeling flow; include more card graphic choices (there are many public domain designs available)
+

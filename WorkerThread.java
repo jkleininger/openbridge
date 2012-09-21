@@ -533,41 +533,44 @@ class WorkerThread implements Runnable {
               zzz(300);
             }
           }
+        }
+        calculateScore();
 
-}
-          calculateScore();
+        if(nsScore >= 100) {
+          nsGames++;
+          nsScore = 0;
+          weScore = 0;
+          vulnerable |= 0x0001;
+        }
+        if(weScore >= 100) {
+          weGames++;
+          nsScore = 0;
+          weScore = 0;
+          vulnerable |= 0x0002;
+        }
 
-		if(nsScore >= 100) {
-		    nsGames++;
-		    nsScore = 0;
-		    weScore = 0;
-		    vulnerable |= 0x0001;
-		}
-		if(weScore >= 100) {
-		    weGames++;
-		    nsScore = 0;
-		    weScore = 0;
-		    vulnerable |= 0x0002;
-		}
-
-		window.syncBelowLine();
-		nsScore = 0;
-		weScore = 0;
-
-	    }
-
-	    window.gameOverBar();
-
-	    if(nsGames > 2) getRubberBonus(0);
-	    else if(weGames > 2) getRubberBonus(1);
-
-	    window.removeDeclarer(declarer.getPosition());
-	    window.removeDealer(dealer.getPosition());
-	    window.gameTotal(nsAboveLine, weAboveLine);
+        window.syncBelowLine();
+        nsScore = 0;
+        weScore = 0;
 
       }
-	}
 
+      window.gameOverBar();
+
+      if(nsGames > 2) getRubberBonus(0);
+      else if(weGames > 2) getRubberBonus(1);
+
+      window.removeDeclarer(declarer.getPosition());
+      window.removeDealer(dealer.getPosition());
+      window.gameTotal(nsAboveLine, weAboveLine);
+
+    }
+  }
+
+  /*********************************************************************
+  * zzz()                                                              *
+  * requests thread to sleep for specified time                        *
+  *********************************************************************/
   private void zzz(int t) {
     try{ Thread.sleep(t);} catch( InterruptedException ie) {}
   }

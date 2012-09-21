@@ -182,7 +182,7 @@ public class BidFrame extends javax.swing.JPanel {
   * disableThrough()                                                   *
   *                                                                    *
   * Disables bid buttons when they are no longer legal bids.  Accepts  *
-  * linear or matrix indices.                                          *
+  * linear or rank/suit indices.                                       *
   *********************************************************************/
   private void disableThrough(int btnNum) {
     int curBtn = 0;
@@ -209,22 +209,17 @@ public class BidFrame extends javax.swing.JPanel {
     int tmpValue = -1;
 
     while(!this.Current.isplayer()) {
-      System.out.println("curr_value: " + curr_value);
       tmpSuit = this.Current.getMaxSuit();
       tmpValue = this.Current.getMaxValue();
 
       if(!isContract()) {
         if(tmpValue > curr_value) {
-          System.out.println("here!");
           if(curr_conditions.equals("DBL") && tmpSuit == curr_suit && clear2double()) {
-            System.out.println("if!");
             curr_conditions = "RDBL";
           } else if(tmpSuit > curr_suit) {
-            System.out.println("else if!");
             if(curr_value == 0) curr_value = 1;
             curr_conditions = "None";
           } else {
-            System.out.println("else!");
             curr_value++;
             curr_conditions = "None";
           }
@@ -343,8 +338,8 @@ public class BidFrame extends javax.swing.JPanel {
   * Verifies whether it is currently legal to double                   *
   *********************************************************************/
   private boolean clear2double() {
-    return ( (Current.getPosition() == "NORTH" && last_bidder == 1) ||
-             ((Current.getPosition() == "EAST" || Current.getPosition() == "WEST") && last_bidder == 0));
+    return ( (Current.getPosition().equals("NORTH") && last_bidder == 1) ||
+             ((Current.getPosition().equals("EAST") || Current.getPosition().equals("WEST")) && last_bidder == 0));
   }
 
   /*********************************************************************

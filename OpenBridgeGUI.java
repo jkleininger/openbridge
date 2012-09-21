@@ -135,7 +135,6 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
     sNum = 0;
     wait = true;
 
-    /** Create the layout for the Game and Score areas */
     SetupGamePanel();
     SetupSidePanel();
 
@@ -479,35 +478,33 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
     return wait;
   }
 
-
-
   /*********************************************************************
   * placeDealer()                                                      *
   *                                                                    *
   * positions the dealer identifier label                              *
   *********************************************************************/
-	public void placeDealer(Hand Dealer) {
-      switch(Dealer.getPositionI()) {
-        case 2:
-          dealString.setBounds(500,10,74,20);
-          North.add(dealString);
-          break;
-        case 3:
-          dealString.setBounds(20,410,74,18);
-          East.add(dealString);
-          break;
-        case 0:
-          dealString.setBounds(500,95,74,20);
-          South.add(dealString);
-          break;
-        case 1:
-          dealString.setBounds(20,410,74,18);
-          West.add(dealString);
-          break;
-        default:
-          break;
-	    }
-	}
+  public void placeDealer(Hand Dealer) {
+    switch(Dealer.getPositionI()) {
+      case 2:
+        dealString.setBounds(500,10,74,20);
+        North.add(dealString);
+        break;
+      case 3:
+        dealString.setBounds(20,410,74,18);
+        East.add(dealString);
+        break;
+      case 0:
+        dealString.setBounds(500,95,74,20);
+        South.add(dealString);
+        break;
+      case 1:
+        dealString.setBounds(20,410,74,18);
+        West.add(dealString);
+        break;
+      default:
+        break;
+    }
+  }
 
   /*********************************************************************
   * removeDealer()                                                     *
@@ -628,7 +625,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
   /*********************************************************************
   * Lock()                                                             *
   *                                                                    *
-  * locks cards making them unplayable                                 *
+  * locks cards, making them unplayable                                *
   *********************************************************************/
   public void Lock(String position) {
 
@@ -661,7 +658,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
   /*********************************************************************
   * ShowContract()                                                     *
   *                                                                    *
-  * unlocks cards making them available for play                       *
+  * displays accepted contract information in upper-right corner       *
   *********************************************************************/
   public void ShowContract(Contract c) {
     String string = null;
@@ -775,7 +772,7 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
   /*********************************************************************
   * clearContract()                                                    *
   *                                                                    *
-  * clears exisiting contract to prepare for a new round               *
+  * clears exisiting contract to prepare for a new deal                *
   *********************************************************************/
   public void clearContract() {
     contract.setVisible(false);
@@ -792,7 +789,6 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 
     if(side == 0) {
       if(weBelowLine >= 440) return;
-
       tmp = new JLabel(Integer.toString(value));
       tmp.setBounds(36, weBelowLine, 95, 20);
       ScorePanelLeft.add(tmp);
@@ -800,7 +796,6 @@ public class OpenBridgeGUI extends javax.swing.JFrame {
 
     } else if(side == 1) {
       if(theyBelowLine >= 440) return;
-
       tmp = new JLabel(Integer.toString(value));
       tmp.setBounds(36, theyBelowLine, 95, 20);
       ScorePanelRight.add(tmp);

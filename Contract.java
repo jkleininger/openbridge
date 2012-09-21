@@ -45,7 +45,7 @@ public class Contract {
   String getWinner()     { return this.Winner;    }
 
   /***********************************************************************
-  * getSuit()                                                            *
+  * getConditions()                                                      *
   *                                                                      *
   * Returns any conditions such as double or redouble that are           *
   * associated with the contract                                         *
@@ -69,9 +69,10 @@ public class Contract {
 	/***********************************************************************
   * isFinal()                                                            *
 	*                                                                      *
+	* Indicates whether contract has been finalized.                       *
   * Returns false if the Winner field has not been set and true if       *
   * the field is anything but the default "None"                         *
   ***********************************************************************/
-  boolean isFinal()      { return (this.cFinal); }
+  boolean isFinal()      { return (this.cFinal);  }
 
 }

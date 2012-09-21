@@ -278,61 +278,60 @@ public class Hand {
         }
 
     //else not lead
-        else {
-          for(int z=0; z<this.numCrds; ++z) {
-            //if have suit
-            if((cards[z]).getNumSuit() == suit) {
-              OnSuitFlag = true;
+    else {
+      for(int z=0; z<this.numCrds; ++z) {
+        //if have suit
+        if((cards[z]).getNumSuit() == suit) {
+          OnSuitFlag = true;
 
-              //if partner dummy
-              if((this.positionI>0)&&(dummy.getPartnerI()==this.positionI)) {
-                return notLeadPartnerDummy(curr_hand, g, dummy, suit, trump, places, alreadyPlayed);
-              } else { //partner not dummy
-                //am i the dummy?
-                if(this.positionI == dummy.getPositionI()) {
-                  if(curr_hand[(places[0])] == null) {
-                    if(cards[z].getValue() > curr_hand[(places[2])].getValue())
-                      return playWinningCard(g, z);
+          //if partner dummy
+          if((this.positionI>0)&&(dummy.getPartnerI()==this.positionI)) {
+            return notLeadPartnerDummy(curr_hand, g, dummy, suit, trump, places, alreadyPlayed);
+          } else { //partner not dummy
+            //am i the dummy?
+
+            if(this.positionI == dummy.getPositionI()) {
+              if(curr_hand[(places[0])] == null) {
+                if(cards[z].getValue() > curr_hand[(places[2])].getValue())
+                  return playWinningCard(g, z);
+              } else {
+                if(curr_hand[(places[1])] == null) {
+                  if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                      curr_hand[(places[2])].getNumSuit() == suit) ||
+                     (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                    return playLowestSuit(g, suit);
                   } else {
-                    if(curr_hand[(places[1])] == null) {
-                      if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-                          curr_hand[(places[2])].getNumSuit() == suit) ||
-                         (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-                        return playLowestSuit(g, suit);
-                      } else {
-                        if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
-                           curr_hand[(places[2])].getNumSuit() == suit) {
-                          return playWinningCard(g, z);
-                        }
-                      }
+                    if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+                       curr_hand[(places[2])].getNumSuit() == suit) {
+                      return playWinningCard(g, z);
+                    }
+                  }
+                } else {
+                  if(curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
+                     curr_hand[(places[0])].getNumSuit() == suit) {
+                    if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                        curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+                       (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                      return playLowestSuit(g, suit);
                     } else {
-                      if(curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
-                         curr_hand[(places[0])].getNumSuit() == suit) {
-                        if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-                            curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-                           (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-                          return playLowestSuit(g, suit);
-                        } else {
-                          if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
-                             cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
-                            return playWinningCard(g, z);
-                        }
-                      } else {
-                        if(cards[z].getValue() > curr_hand[(places[1])].getValue()) {
-                          if(cards[z].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)
-                            return playWinningCard(g, z);
-                        }
-                      }
+                      if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+                         cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
+                        return playWinningCard(g, z);
+                    }
+                  } else {
+                    if(cards[z].getValue() > curr_hand[(places[1])].getValue()) {
+                      if(cards[z].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)
+                        return playWinningCard(g, z);
                     }
                   }
                 }
+              }
+            }
 
             //if dummy hasn't played yet
             if(curr_hand[dummyPos] == null) {
-
               tmp_card = checkDummy(dummy, suit, trump);
-
-            //can the dummy be beat?
+              //can the dummy be beat?
               if(tmp_card.getNumSuit() == suit) {
                 if(cards[z].getNumSuit() == suit) {
                   if(cards[z].getValue() > tmp_card.getValue()) {
@@ -380,53 +379,54 @@ public class Hand {
                 return playLowestSuit(g, suit);
             }
           } else { //dummy has played
-            if(curr_hand[(places[0])] == null) {
-            if(cards[z].getNumSuit() == suit && cards[z].getValue() > curr_hand[(places[2])].getValue()) {
-              return playWinningCard(g, z);
-            }
-          } else {
-            if(curr_hand[(places[1])] == null) {
-              if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-                  curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-                 (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
-                  curr_hand[(places[2])].getNumSuit() != trump)) {
-                return playLowestSuit(g, suit);
-              } else {
-                if(curr_hand[(places[2])].getNumSuit() == trump && suit != trump) {
-                  return playLowestSuit(g, suit);
-                } else {
-                  if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-                     cards[z].getValue() > curr_hand[(places[2])].getValue()) {
-                    return playWinningCard(g, z);
-                  }
+              if(curr_hand[(places[0])] == null) {
+                if(cards[z].getNumSuit() == suit && cards[z].getValue() > curr_hand[(places[2])].getValue()) {
+                  return playWinningCard(g, z);
                 }
-              }
-            } else {
-              //last to play
-              if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
-                  curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit()) ||
-                 (curr_hand[(places[1])].getNumSuit() != trump && curr_hand[(places[0])].getNumSuit() == trump)) {
-                if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-                    curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-                   (curr_hand[(places[2])].getNumSuit() != trump && curr_hand[(places[0])].getNumSuit() == trump)) {
-                  return playLowestSuit(g, suit);
-                } else {
-                  if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
-                     cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
-                    return playWinningCard(g, z);
-                  }
-                } else { //partner losing
-                  if((curr_hand[(places[1])].getNumSuit() == trump ||
-                      curr_hand[(places[2])].getNumSuit() == trump) && trump != suit) {
+              } else {
+                if(curr_hand[(places[1])] == null) {
+                  if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                      curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+                     (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
+                      curr_hand[(places[2])].getNumSuit() != trump)) {
                     return playLowestSuit(g, suit);
                   } else {
-                    if(cards[z].getNumSuit() == suit &&
-                       cards[z].getValue() > curr_hand[(places[1])].getValue()) {
-                      if((curr_hand[(places[2])].getNumSuit() == suit &&
-                          cards[z].getValue() > curr_hand[(places[2])].getValue()) ||
-                         (curr_hand[(places[2])].getNumSuit() != suit &&
-                          curr_hand[(places[2])].getNumSuit() != trump)) {
+                    if(curr_hand[(places[2])].getNumSuit() == trump && suit != trump) {
+                      return playLowestSuit(g, suit);
+                    } else {
+                      if(cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+                         cards[z].getValue() > curr_hand[(places[2])].getValue()) {
                         return playWinningCard(g, z);
+                      }
+                    }
+                  }
+                } else {
+                  //last to play
+                  if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
+                      curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit()) ||
+                     (curr_hand[(places[1])].getNumSuit() != trump && curr_hand[(places[0])].getNumSuit() == trump)) {
+                    if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                        curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+                       (curr_hand[(places[2])].getNumSuit() != trump && curr_hand[(places[0])].getNumSuit() == trump)) {
+                      return playLowestSuit(g, suit);
+                    } else {
+                      if(cards[z].getValue() > curr_hand[(places[2])].getValue() &&
+                         cards[z].getNumSuit() == curr_hand[(places[2])].getNumSuit())
+                        return playWinningCard(g, z);
+                    }
+                  } else { //partner losing
+                    if((curr_hand[(places[1])].getNumSuit() == trump ||
+                        curr_hand[(places[2])].getNumSuit() == trump) && trump != suit) {
+                      return playLowestSuit(g, suit);
+                    } else {
+                      if(cards[z].getNumSuit() == suit &&
+                         cards[z].getValue() > curr_hand[(places[1])].getValue()) {
+                        if((curr_hand[(places[2])].getNumSuit() == suit &&
+                            cards[z].getValue() > curr_hand[(places[2])].getValue()) ||
+                           (curr_hand[(places[2])].getNumSuit() != suit &&
+                            curr_hand[(places[2])].getNumSuit() != trump)) {
+                          return playWinningCard(g, z);
+                        }
                       }
                     }
                   }
@@ -436,18 +436,10 @@ public class Hand {
           }
         }
       }
-    }
-
-
-
-
-
-
-    if(OnSuitFlag) {
-      return playLowestSuit(g, suit);
-    }
-
-    if(trump != suit && trump != 4) {
+      if(OnSuitFlag) {
+        return playLowestSuit(g, suit);
+      }
+      if(trump != suit && trump != 4) {
       for(int i=0; i<this.numCrds; ++i) {
         if(cards[i].getNumSuit() == trump) {
           TrumpFlag = true;
@@ -470,291 +462,266 @@ public class Hand {
                 } else {
                   return playWinningCard(g, i);
               }
-				    } else {
-				    //last to play
-					if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit() &&
-					    curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue()) ||
-					   (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[1])].getNumSuit() &&
-					    curr_hand[(places[0])].getNumSuit() == trump)) {
-					    if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-						curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
-					       (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
-						curr_hand[(places[2])].getNumSuit() != trump)) {
+            } else {
+              //last to play
+              if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit() &&
+                  curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue()) ||
+                 (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[1])].getNumSuit() &&
+                  curr_hand[(places[0])].getNumSuit() == trump)) {
+                if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+                    curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
+                   (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
+                    curr_hand[(places[2])].getNumSuit() != trump)) {
+                  return playLowestNontrump(g, trump);
+                } else {
+                  if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
+                     curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                    return playWinningCard(g, i);
+                }
+              }
+            } else {
+              if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
+                 curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                return playWinningCard(g, i);
+              }
+            }
+          }
+        }
+      } else {
+        //am i the dummy?
+        if(this.position == dummy.getPosition()) {
+          if(curr_hand[(places[0])] == null) {
+            return playWinningCard(g, i);
+          } else {
+            if(curr_hand[(places[1])] == null) {
+              if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                  curr_hand[(places[2])].getNumSuit() == suit) ||
+                 (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                return playLowestNontrump(g, trump);
+              } else {
+                if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+                    curr_hand[(places[2])].getNumSuit() == trump) ||
+                    curr_hand[(places[2])].getNumSuit() != trump) {
+                  return playWinningCard(g, i);
+                }
+              }
+            } else {
+              if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
+                  curr_hand[(places[0])].getNumSuit() == suit) || curr_hand[(places[0])].getNumSuit() == trump) {
+                if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                  curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+                 (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                  return playLowestNontrump(g, trump);
+                } else {
+                  if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+                      cards[i].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+                      curr_hand[(places[2])].getNumSuit() != trump)
+                    return playWinningCard(g, i);
+                }
+              } else {
+                if((cards[i].getValue() > curr_hand[(places[1])].getValue() &&
+                    cards[i].getNumSuit() == suit) || curr_hand[(places[1])].getNumSuit() != trump) {
+                  if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
+                      cards[i].getNumSuit() == suit) || curr_hand[(places[2])].getNumSuit() != trump)
+                    return playWinningCard(g, i);
+                  }
+                }
+              }
+            }
+          }
 
-						return playLowestNontrump(g, trump);
-					    } else {
-						if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+          //partner not dummy
+          if(curr_hand[dummyPos] == null) {
+            tmp_card = checkDummy(dummy, suit, trump);
 
-						    return playWinningCard(g, i);
-						}
-					    }
-					} else {
-					    if(curr_hand[(places[2])].getNumSuit() != trump || (curr_hand[(places[2])].getNumSuit() == trump &&
-					       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+            //dummy has to follow suit
+            if(tmp_card.getNumSuit() == suit) {
+              if(curr_hand[(places[0])] == null) {
+                return playWinningCard(g, i);
+              } else {
+                if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+                    curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
+                   (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                  if(curr_hand[(places[0])].getValue() > tmp_card.getValue()) {
+                    return playLowestNontrump(g, trump);
+                  } else {
+                    return playWinningCard(g, i);
+                  }
+                } else {
+                  if(curr_hand[(places[2])].getNumSuit() == suit ||
+                    (curr_hand[(places[2])].getNumSuit() == trump &&
+                     curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                    return playWinningCard(g, i);
+                  }
+                }
+              }
+            } else {
+              if(tmp_card.getNumSuit() == trump) {
+                if(curr_hand[(places[0])] == null) {
+                  if(cards[i].getValue() > tmp_card.getValue()) {
+                    return playWinningCard(g, i);
+                  }
+                } else {
+                  if(cards[i].getValue() > tmp_card.getValue()) {
+                    if(curr_hand[(places[2])].getNumSuit() == suit ||
+                      (curr_hand[(places[2])].getNumSuit() == trump &&
+                       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                      return playWinningCard(g, i);
+                    }
+                  }
+                }
+              }
+            }
+          } else { //dummy has played
+            if(curr_hand[(places[0])] == null) {
+              return playLowestSuit(g, trump);
+            } else {
+              if(curr_hand[(places[1])] == null) {
+                if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+                    curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
+                   (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+                  return playLowestNontrump(g, trump);
+                } else {
+                  if(curr_hand[(places[2])].getNumSuit() != trump ||
+                    (curr_hand[(places[2])].getNumSuit() == trump &&
+                     curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                    return playWinningCard(g, i);
+                  }
+                }
+              } else {
+                if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit() &&
+                    curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue()) ||
+                   (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[1])].getNumSuit() != trump)) {
+                  if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+                      curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
+                     (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
+                      curr_hand[(places[2])].getNumSuit() != trump)) {
+                    return playLowestNontrump(g, trump);
+                  } else {
+                    if(curr_hand[(places[2])].getNumSuit() != trump ||
+                      (curr_hand[(places[2])].getNumSuit() == trump &&
+                       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                      return playWinningCard(g, i);
+                    }
+                  }
+                } else {
+                  if(curr_hand[(places[2])].getNumSuit() != trump ||
+                    (curr_hand[(places[2])].getNumSuit() == trump &&
+                     curr_hand[(places[2])].getValue() < cards[i].getValue())) {
+                    return playWinningCard(g, i);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
-						return playWinningCard(g, i);
-					    }
-					}
-				    }
-				}
-			    } else {
-			    //am i the dummy?
-				if(this.position == dummy.getPosition()) {
-				    if(curr_hand[(places[0])] == null) {
-					return playWinningCard(g, i);
-
-				    } else {
-					if(curr_hand[(places[1])] == null) {
-					    if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-						curr_hand[(places[2])].getNumSuit() == suit) ||
-					       (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-
-						return playLowestNontrump(g, trump);
-					    } else {
-						if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
-						    curr_hand[(places[2])].getNumSuit() == trump) ||
-						    curr_hand[(places[2])].getNumSuit() != trump) {
-							return playWinningCard(g, i);
-						}
-					    }
-					} else {
-					    if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
-						curr_hand[(places[0])].getNumSuit() == suit) || curr_hand[(places[0])].getNumSuit() == trump) {
-						if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-						    curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-						   (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-
-						    return playLowestNontrump(g, trump);
-						} else {
-						    if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
-							cards[i].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-							curr_hand[(places[2])].getNumSuit() != trump)
-							return playWinningCard(g, i);
-						}
-					    } else {
-						if((cards[i].getValue() > curr_hand[(places[1])].getValue() &&
-						    cards[i].getNumSuit() == suit) || curr_hand[(places[1])].getNumSuit() != trump) {
-						    if((cards[i].getValue() > curr_hand[(places[2])].getValue() &&
-						        cards[i].getNumSuit() == suit) || curr_hand[(places[2])].getNumSuit() != trump)
-							return playWinningCard(g, i);
-						}
-					    }
-					}
-				    }
-				}
-
-			    //partner not dummy
-				if(curr_hand[dummyPos] == null) {
-				    tmp_card = checkDummy(dummy, suit, trump);
-
-				    //dummy has to follow suit
-				    if(tmp_card.getNumSuit() == suit) {
-					if(curr_hand[(places[0])] == null) {
-					    return playWinningCard(g, i);
-					} else {
-					    if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-						curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
-					       (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-
-						if(curr_hand[(places[0])].getValue() > tmp_card.getValue()) {
-						    return playLowestNontrump(g, trump);
-						} else {
-						    return playWinningCard(g, i);
-						}
-					    } else {
-						if(curr_hand[(places[2])].getNumSuit() == suit ||
-						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
-						    return playWinningCard(g, i);
-						}
-					    }
-					}
-				    } else {
-					if(tmp_card.getNumSuit() == trump) {
-					    if(curr_hand[(places[0])] == null) {
-						if(cards[i].getValue() > tmp_card.getValue()) {
-						    return playWinningCard(g, i);
-						}
-					    } else {
-						if(cards[i].getValue() > tmp_card.getValue()) {
-						    if(curr_hand[(places[2])].getNumSuit() == suit ||
-						      (curr_hand[(places[2])].getNumSuit() == trump &&
-						       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
-
-							return playWinningCard(g, i);
-						    }
-						}
-					    }
-					}
-				    }
-				} else { //dummy has played
-				    if(curr_hand[(places[0])] == null) {
-					return playLowestSuit(g, trump);
-
-				    } else {
-					if(curr_hand[(places[1])] == null) {
-					    if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-						curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
-					       (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-						return playLowestNontrump(g, trump);
-					    } else {
-						if(curr_hand[(places[2])].getNumSuit() != trump ||
-						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
-
-						    return playWinningCard(g, i);
-						}
-					    }
-					} else {
-					    if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit() &&
-						curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue()) ||
-					       (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[1])].getNumSuit() != trump)) {
-						if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-						    curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
-						   (curr_hand[(places[0])].getNumSuit() != curr_hand[(places[2])].getNumSuit() &&
-						    curr_hand[(places[2])].getNumSuit() != trump)) {
-						    return playLowestNontrump(g, trump);
-						} else {
-						    if(curr_hand[(places[2])].getNumSuit() != trump ||
-						      (curr_hand[(places[2])].getNumSuit() == trump &&
-						       curr_hand[(places[2])].getValue() < cards[i].getValue())) {
-							return playWinningCard(g, i);
-						    }
-						}
-					    } else {
-						if(curr_hand[(places[2])].getNumSuit() != trump ||
-						  (curr_hand[(places[2])].getNumSuit() == trump &&
-						   curr_hand[(places[2])].getValue() < cards[i].getValue())) {
-						    return playWinningCard(g, i);
-						}
-					    }
-					}
-				    }
-				}
-			    }
-			}
-		    }
-
-		    if(TrumpFlag) {
-			return playLowestNontrump(g, trump);
-		    }
-
-		    return playLowestCard(g);
-		}
-		return playLowestCard(g);
-	    }
-	}
-
+    if(TrumpFlag) {
+      return playLowestNontrump(g, trump);
+    }
+    return playLowestCard(g);
+  }
+      return playLowestCard(g);
+    }
+  }
 
   /*********************************************************************
   * notLeadPartnerDummy()                                              *
   *                                                                    *
+  * selects a card from dummy's hand                                   *
   *********************************************************************/
-	private Card notLeadPartnerDummy(Card[] curr_hand, OpenBridgeGUI g, Hand dummy, int suit, int trump, int[] places, boolean[][] alreadyPlayed) {
-	    Card tmp_card = new Card();
+    private Card notLeadPartnerDummy(Card[] curr_hand, OpenBridgeGUI g, Hand dummy, int suit, int trump, int[] places, boolean[][] alreadyPlayed) {
+      Card tmp_card = new Card();
       Card[]  cards      = (Card[]) carda.toArray();
 
-	    //partner hasn't played
-	    if(curr_hand[(places[0])] == null) {
-		//can partner beat places[2]?
-		for(int i=0; i<dummy.getNumCrds(); ++i) {
-		    if((dummy.getCard(i)).getNumSuit() == suit && (dummy.getCard(i)).getValue() == highestPlayable(alreadyPlayed, suit)) {
-			if((dummy.getCard(i)).getValue() > curr_hand[(places[2])].getValue()) {
-			    return playLowestSuit(g, suit);
-			}
-		    }
-		}
-		for(int j=0; j<this.numCrds; ++j) {
-		    if(cards[j].getNumSuit() == suit && cards[j].getValue() == highestPlayable(alreadyPlayed, suit)) {
-			if(cards[j].getValue() > curr_hand[(places[2])].getValue()) {
-			    return playWinningCard(g, j);
-			}
-		    } else {
-			return playLowestSuit(g, suit);
-		    }
-		}
-	    }
-	    //partner has played
-	    else {
-		if(curr_hand[(places[1])] != null) {
-		    //if partner winnig
-		    if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
-			curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit()) ||
-		       (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[1])].getNumSuit() != trump)) {
-			if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
-			    curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
-			   (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[2])].getNumSuit() != trump)) {
-
-			    //play lowest on suit
-			    return playLowestSuit(g, suit);
-			} else {
-			    if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
-				return playLowestSuit(g, suit);
-			    } else {
-				for(int k=0; k<this.numCrds; ++k) {
-				    if(cards[k].getValue() > curr_hand[(places[2])].getValue() &&
-				       cards[k].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
-					return playWinningCard(g, k);
-				    }
-				}
-				return playLowestSuit(g, suit);
-			    }
-			}
-		    } else { //partner losing
-
-			//if cannot win
-			if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
-			    //play lowest on suit
-			    return playLowestSuit(g, suit);
-			}
-			else {
-			    //else if can win
-			    for(int l=0; l<this.numCrds; ++l) {
-				if(cards[l].getNumSuit() == suit) {
-				    if((cards[l].getValue() > curr_hand[(places[1])].getValue() && curr_hand[(places[1])].getNumSuit() == suit) &&
-				       (cards[l].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)) {
-					return playWinningCard(g, l);
-				    }
-				}
-			    }
-			    //else throw low
-			    return playLowestSuit(g, suit);
-			}
-		    }
-		} else {
-		    if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
-			curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
-		       (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
-
-			//play lowest on suit
-			return playLowestSuit(g, suit);
-		    } else {
-			if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
-			    return playLowestSuit(g, suit);
-			} else {
-			    for(int m=0; m<this.numCrds; ++m) {
-				if(cards[m].getValue() > curr_hand[(places[2])].getValue() &&
-				   cards[m].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
-				    return playWinningCard(g, m);
-				}
-			    }
-			    return playLowestSuit(g, suit);
-			}
-		    }
-		}
-	    }
-	    return tmp_card;
-	}
-
-
-
-
-
-
-
-
-
+      //partner hasn't played
+      if(curr_hand[(places[0])] == null) {
+      //can partner beat places[2]?
+        for(int i=0; i<dummy.getNumCrds(); ++i) {
+          if((dummy.getCard(i)).getNumSuit() == suit && (dummy.getCard(i)).getValue() == highestPlayable(alreadyPlayed, suit)) {
+            if((dummy.getCard(i)).getValue() > curr_hand[(places[2])].getValue()) {
+              return playLowestSuit(g, suit);
+            }
+          }
+        }
+        for(int j=0; j<this.numCrds; ++j) {
+          if(cards[j].getNumSuit() == suit && cards[j].getValue() == highestPlayable(alreadyPlayed, suit)) {
+            if(cards[j].getValue() > curr_hand[(places[2])].getValue()) {
+              return playWinningCard(g, j);
+            }
+          } else {
+            return playLowestSuit(g, suit);
+          }
+        }
+      } else {
+    //partner has played
+        if(curr_hand[(places[1])] != null) {
+          //if partner winnig
+          if((curr_hand[(places[0])].getValue() > curr_hand[(places[1])].getValue() &&
+              curr_hand[(places[0])].getNumSuit() == curr_hand[(places[1])].getNumSuit()) ||
+             (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[1])].getNumSuit() != trump)) {
+            if((curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue() &&
+                curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit()) ||
+               (curr_hand[(places[0])].getNumSuit() == trump && curr_hand[(places[2])].getNumSuit() != trump)) {
+              //play lowest on suit
+              return playLowestSuit(g, suit);
+            } else {
+              if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
+                return playLowestSuit(g, suit);
+              } else {
+                for(int k=0; k<this.numCrds; ++k) {
+                  if(cards[k].getValue() > curr_hand[(places[2])].getValue() &&
+                  cards[k].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
+                    return playWinningCard(g, k);
+                  }
+                }
+                return playLowestSuit(g, suit);
+              }
+            }
+          } else { //partner losing
+            //if cannot win
+            if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
+              //play lowest on suit
+              return playLowestSuit(g, suit);
+            } else {
+              //else if can win
+              for(int l=0; l<this.numCrds; ++l) {
+                if(cards[l].getNumSuit() == suit) {
+                  if((cards[l].getValue() > curr_hand[(places[1])].getValue() && curr_hand[(places[1])].getNumSuit() == suit) &&
+                     (cards[l].getValue() > curr_hand[(places[2])].getValue() && curr_hand[(places[2])].getNumSuit() == suit)) {
+                    return playWinningCard(g, l);
+                  }
+                }
+              }
+              //else throw low
+              return playLowestSuit(g, suit);
+            }
+          }
+        } else {
+          if((curr_hand[(places[0])].getNumSuit() == curr_hand[(places[2])].getNumSuit() &&
+              curr_hand[(places[0])].getValue() > curr_hand[(places[2])].getValue()) ||
+             (curr_hand[(places[2])].getNumSuit() != suit && curr_hand[(places[2])].getNumSuit() != trump)) {
+            //play lowest on suit
+              return playLowestSuit(g, suit);
+          } else {
+            if(suit != trump && curr_hand[(places[2])].getNumSuit() == trump) {
+              return playLowestSuit(g, suit);
+          } else {
+            for(int m=0; m<this.numCrds; ++m) {
+              if(cards[m].getValue() > curr_hand[(places[2])].getValue() &&
+                 cards[m].getNumSuit() == curr_hand[(places[2])].getNumSuit()) {
+                return playWinningCard(g, m);
+              }
+            }
+            return playLowestSuit(g, suit);
+          }
+        }
+      }
+    }
+    return tmp_card;
+  }
 
   /*********************************************************************
   * highestPlayable() **************************************************
