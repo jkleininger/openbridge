@@ -1,4 +1,22 @@
 *******************************************************************************
+* openbridge                                                                  *
+*                                                                             *
+* Initial code by Scott DiTomaso, 2009 - 2010                                 *
+* Additional work by Jason K Leininger,  2012                                 *
+* Kettering University                                                        *
+*                                                                             *
+*******************************************************************************
+
+Basic use:
+
+        java -jar openbridge.jar
+
+If the jar has been extracted, from the parent directory (containing ./openbridge/):
+
+        javac openbridge/*.java
+        java openbridge.openbridge
+
+*******************************************************************************
 *                                                                             *
 *                Enhancements, fixes, and other modifications                 *
 *                                                                             *
@@ -22,7 +40,7 @@ Simple multi-line if() blcoks resulting in assignment of a single variable were 
 
 Indentation, previously a combination of spaces and tabs, has been homogenized to use only spaces.
 
-Stylistic preferences have also been largely normalized -- vertical alignment of declarations and successive assignments; simple getPropertyX() methods are now mostly single-line;
+Stylistic preferences have also been largely normalized -- vertical alignment of declarations and successive assignments; simple getPropertyXXX() methods are now mostly single-line; various other whitespace considerations
 
 
 *******************************************************************************
@@ -58,5 +76,4 @@ Then, each supporting method is a smaller piece of code.  It's easier to read an
 
 * Further GUI enhancement *****************************************************
 
-Though lower priority than backend functionality (computer strategy, in particular), the user interface will be an important piece of the project at some point.  It is currently functional, but a few key improvements should be made:  handle window resizing; handle smaller screen sizes; add cusomizable delays during computer play to give the game a more natural feeling flow; include more card graphic choices (there are many public domain designs available)
-
+Though lower priority than backend functionality (computer strategy, in particular), the user interface will be an important piece of the project at some point.  It is currently functional, but a few key improvements should be made:  handle window resizing; handle smaller screen sizes; add cusomizable delays during computer play to give the game a more natural feeling flow

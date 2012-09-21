@@ -24,7 +24,7 @@ public class BidFrame extends javax.swing.JPanel {
 	private int        numPass;
 	private int        last_bidder;
 
-  private char[]     cSuit = {'C','H','D','S','N'};
+  private char[]     cSuit = {'C','D','H','S','N'};
 
 	private static int FRAME_W    = 480;
 	private static int FRAME_H    = 240;
